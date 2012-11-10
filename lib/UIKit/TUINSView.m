@@ -116,6 +116,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 // these cannot be implicitly synthesized because they're from protocols/categories
 @synthesize hostView = _hostView;
 @synthesize appKitHostView = _appKitHostView;
+@synthesize trackingView = _trackingView;
 @synthesize rootView = _rootView;
 @synthesize maskLayer = _maskLayer;
 
@@ -271,6 +272,11 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	
 	if(newWindow == nil) {
 		[_rootView removeFromSuperview];
+		// since the layer retains the layoutManger, we need to set it to nil to
+		// make sure TUINSView will be deallocated
+		self.appKitHostView.layer.layoutManager = nil;
+	} else {
+		self.appKitHostView.layer.layoutManager = self;
 	}
 }
 
@@ -430,8 +436,8 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		// normal case
 	normal:
 		;
-		_trackingView = [self viewForEvent:event];
-		[_trackingView mouseDown:event];
+		self.trackingView = [self viewForEvent:event];
+		[self.trackingView mouseDown:event];
 	}
 	
 	[TUITooltipWindow endTooltip];
@@ -439,18 +445,18 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 - (void)mouseUp:(NSEvent *)event
 {
-	TUIView *lastTrackingView = _trackingView;
+	TUIView *lastTrackingView = self.trackingView;
 
-	_trackingView = nil;
+	self.trackingView = nil;
 
-	[lastTrackingView mouseUp:event]; // after _trackingView set to nil, will call mouseUp:fromSubview:
+	[lastTrackingView mouseUp:event]; // after trackingView is set to nil, will call mouseUp:fromSubview:
 	
 	[self _updateHoverViewWithEvent:event];
 }
 
 - (void)mouseDragged:(NSEvent *)event
 {
-	[_trackingView mouseDragged:event];
+	[self.trackingView mouseDragged:event];
 }
 
 - (void)mouseMoved:(NSEvent *)event
@@ -468,19 +474,19 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 - (void)rightMouseDown:(NSEvent *)event
 {
-	_trackingView = [self viewForEvent:event];
-	[_trackingView rightMouseDown:event];
+	self.trackingView = [self viewForEvent:event];
+	[self.trackingView rightMouseDown:event];
 	[TUITooltipWindow endTooltip];
 	[super rightMouseDown:event]; // we need to send this up the responder chain so that -menuForEvent: will get called for two-finger taps
 }
 
 - (void)rightMouseUp:(NSEvent *)event
 {
-	TUIView *lastTrackingView = _trackingView;
+	TUIView *lastTrackingView = self.trackingView;
 	
-	_trackingView = nil;
+	self.trackingView = nil;
 	
-	[lastTrackingView rightMouseUp:event]; // after _trackingView set to nil, will call mouseUp:fromSubview:
+	[lastTrackingView rightMouseUp:event]; // after trackingView is set to nil, will call mouseUp:fromSubview:
 }
 
 - (void)scrollWheel:(NSEvent *)event
@@ -551,7 +557,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 - (BOOL)isTrackingSubviewOfView:(TUIView *)v
 {
-	return [_trackingView isDescendantOfView:v];
+	return [self.trackingView isDescendantOfView:v];
 }
 
 - (BOOL)isHoveringSubviewOfView:(TUIView *)v
