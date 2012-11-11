@@ -15,6 +15,7 @@
  */
 
 #import "TUIResponder.h"
+#import "TUITextStorage.h"
 #import "CoreText+Additions.h"
 
 @class NSFont;
@@ -42,7 +43,6 @@ typedef enum {
 @protocol TUITextRendererDelegate;
 
 @interface TUITextRenderer : TUIResponder {
-	NSAttributedString *attributedString;
 	CGRect frame;
 	TUIView *__unsafe_unretained view; // unsafe_unretained
 	
@@ -78,7 +78,7 @@ typedef enum {
 	} _flags;
 }
 
-@property (nonatomic, strong) NSAttributedString *attributedString;
+@property (nonatomic, strong) TUITextStorage *attributedString;
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, unsafe_unretained) TUIView *view; // unsafe_unretained, remember to set to nil before view goes away
 
@@ -111,7 +111,7 @@ typedef enum {
 // contain a string with the same length as the original string,
 // but all characters replaced by large ellipses instead.
 // This method may be expanded or removed in the future.
-- (NSAttributedString *)drawingAttributedString;
+- (TUITextStorage *)drawingAttributedString;
 
 - (NSRange)selectedRange;
 - (void)setSelection:(NSRange)selection;

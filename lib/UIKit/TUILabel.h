@@ -17,18 +17,31 @@
 #import "TUIView.h"
 #import "TUITextStorage.h"
 
-/*
- Check out TUITextRenderer, you probably want to use that to get
- subpixel AA and a flatter view heirarchy.
- */
-
+// Check out TUITextRenderer, you probably want to use that to get
+// subpixel AA and a flatter view heirarchy.
 @interface TUILabel : TUIView
-@property(nonatomic, copy) NSString *text;
-@property(nonatomic, strong) NSAttributedString	*attributedString;
-@property(nonatomic, getter=isSelectable) BOOL selectable;
-@property(nonatomic, readonly) TUITextRenderer *renderer;
-@property(nonatomic, strong) NSFont *font;
-@property(nonatomic, strong) NSColor *textColor;
-@property(nonatomic, assign) TUITextAlignment alignment;
-@property(nonatomic, assign) TUILineBreakMode lineBreakMode; 
+
+@property (nonatomic, copy) NSString *text;
+@property (nonatomic, strong) TUITextStorage *textStorage;
+@property (nonatomic, readonly) TUITextRenderer *renderer;
+
+@property (nonatomic, strong) NSFont *font;
+@property (nonatomic, strong) NSColor *textColor;
+@property (nonatomic, assign) TUITextAlignment textAlignment;
+@property (nonatomic, assign) TUILineBreakMode lineBreakMode;
+@property (nonatomic, assign) NSUInteger numberOfLines;
+
+// The following properties only work if an explicit textStorage is not set.
+@property (nonatomic, assign, getter = isHighlighted) BOOL highlighted;
+@property (nonatomic, assign, getter = isEnabled) BOOL enabled;
+@property (nonatomic, strong) NSColor *highlightedTextColor;
+
+// Defaults to emboss with no blur.
+@property (nonatomic, strong) NSColor *shadowColor;
+@property (nonatomic, assign) CGSize shadowOffset;
+
+// Dysfunctional.
+@property (nonatomic, assign) BOOL adjustsFontSizeToFitWidth;
+@property (nonatomic, assign) CGFloat minimumFontSize;
+
 @end

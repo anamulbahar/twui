@@ -348,7 +348,7 @@ static CAAnimation *ThrobAnimation()
 	if(renderer.attributedString.length < 1 && self.placeholder.length > 0) {
 		TUITextStorage *attributedString = [TUITextStorage storageWithString:self.placeholder];
 		attributedString.font = self.font;
-		attributedString.textColor = [self.textColor colorWithAlphaComponent:0.4f];
+		attributedString.color = [self.textColor colorWithAlphaComponent:0.4f];
 		
 		self.placeholderRenderer.attributedString = attributedString;
 		self.placeholderRenderer.frame = rendererFrame;
@@ -393,7 +393,7 @@ static CAAnimation *ThrobAnimation()
 	
 	if(fakeMetrics) {
 		// restore
-		renderer.attributedString = [renderer backingStore];
+		renderer.attributedString = (TUITextStorage *)[renderer backingStore];
 	}
 	
 	return r;

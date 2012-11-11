@@ -37,7 +37,7 @@
 - (CGSize)ab_sizeConstrainedToSize:(CGSize)size
 {
 	TUITextRenderer *t = [self ab_sharedTextRenderer];
-	t.attributedString = self;
+	t.attributedString = (TUITextStorage *)self;
 	t.frame = CGRectMake(0, 0, size.width, size.height);
 	return [t size];
 }
@@ -50,7 +50,7 @@
 - (CGSize)ab_drawInRect:(CGRect)rect context:(CGContextRef)ctx
 {
 	TUITextRenderer *t = [self ab_sharedTextRenderer];
-	t.attributedString = self;
+	t.attributedString = (TUITextStorage *)self;
 	t.frame = rect;
 	[t drawInContext:ctx];
 	return [t size];
@@ -91,7 +91,7 @@
 - (CGSize)ab_drawInRect:(CGRect)rect color:(NSColor *)color font:(NSFont *)font
 {
 	TUITextStorage *s = [TUITextStorage storageWithString:self];
-	s.textColor = color;
+	s.color = color;
 	s.font = font;
 	return [s ab_drawInRect:rect];
 }

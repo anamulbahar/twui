@@ -48,7 +48,7 @@
 		_tableView.maintainContentOffsetAfterReload = YES;
 		
 		TUILabel *footerLabel = [[TUILabel alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, 44)];
-		footerLabel.alignment = TUITextAlignmentCenter;
+		footerLabel.textAlignment = TUITextAlignmentCenter;
 		footerLabel.backgroundColor = [NSColor clearColor];
 		footerLabel.font = exampleFont2;
 		footerLabel.text = @"Example Footer View";
@@ -147,7 +147,7 @@
 {
 	ExampleSectionHeaderView *view = [[ExampleSectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 32)];
 	TUITextStorage *title = [TUITextStorage storageWithString:[NSString stringWithFormat:@"Example Section %d", (int)section]];
-	title.textColor = [NSColor blackColor];
+	title.color = [NSColor blackColor];
 	title.font = exampleFont2;
 	view.labelRenderer.attributedString = title;
 	
@@ -187,7 +187,7 @@
 	ExampleTableViewCell *cell = reusableTableCellOfClass(tableView, ExampleTableViewCell);
 	
 	TUITextStorage *s = [TUITextStorage storageWithString:[NSString stringWithFormat:@"example cell %d", (int)indexPath.row]];
-	s.textColor = [NSColor blackColor];
+	s.color = [NSColor blackColor];
 	s.font = exampleFont1;
 	[s setFont:exampleFont2 inRange:NSMakeRange(8, 4)]; // make the word "cell" bold
 	cell.attributedString = s;

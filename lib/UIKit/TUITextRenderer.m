@@ -200,7 +200,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 	return CFRangeMake(first, last - first);
 }
 
-- (NSAttributedString*)drawingAttributedString {
+- (TUITextStorage *)drawingAttributedString {
     return attributedString;
 }
 
@@ -368,6 +368,9 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 
 - (CGSize)sizeConstrainedToWidth:(CGFloat)width numberOfLines:(NSUInteger)numberOfLines
 {
+	if(numberOfLines == 0)
+		return [self sizeConstrainedToWidth:width];
+	
 	NSMutableAttributedString *fake = [self.drawingAttributedString mutableCopy];
 	[fake replaceCharactersInRange:NSMakeRange(0, [fake length]) withString:@"M"];
 	CGFloat singleLineHeight = [fake ab_sizeConstrainedToWidth:width].height;
@@ -376,7 +379,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 	return CGSizeMake(size.width, MIN(maxHeight, size.height));
 }
 
-- (void)setAttributedString:(NSAttributedString *)a
+- (void)setAttributedString:(TUITextStorage *)a
 {
 	attributedString = a;
 	

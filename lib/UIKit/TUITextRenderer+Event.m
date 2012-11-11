@@ -161,7 +161,7 @@
 		self.hitRange = nil;
 		
 		NSRange r = [hitActiveRange rangeValue];
-		NSString *s = [[attributedString string] substringWithRange:r];
+		NSString *s = [[self.attributedString string] substringWithRange:r];
 		
 		// bit of a hack
 		if(hitActiveRange.rangeFlavor == ABActiveTextRangeFlavorURL) {
@@ -277,7 +277,7 @@ normal:
 - (void)selectAll:(id)sender
 {
 	_selectionStart = 0;
-	_selectionEnd = [[attributedString string] length];
+	_selectionEnd = [[self.attributedString string] length];
 	_selectionAffinity = TUITextSelectionAffinityCharacter;
 	[view setNeedsDisplay];
 }

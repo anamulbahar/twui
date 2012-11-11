@@ -33,12 +33,6 @@ typedef enum {
 } TUILineBreakMode;
 
 typedef enum {
-	TUIBaselineAdjustmentAlignBaselines,
-	TUIBaselineAdjustmentAlignCenters,
-	TUIBaselineAdjustmentNone,
-} TUIBaselineAdjustment;
-
-typedef enum {
 	TUITextAlignmentLeft,
 	TUITextAlignmentCenter,
 	TUITextAlignmentRight,
@@ -59,7 +53,7 @@ typedef enum {
 @property (nonatomic, assign) CGFloat kerning;
 @property (nonatomic, assign) CGFloat lineHeight;
 @property (nonatomic, strong) NSShadow *shadow;
-@property (nonatomic, strong) NSColor *textColor;
+@property (nonatomic, strong) NSColor *color;
 @property (nonatomic, strong) NSColor *backgroundColor;
 @property (nonatomic, copy) TUITextStoragePreDrawBlock preDrawBlock;
 @property (nonatomic, assign) TUIBackgroundFillStyle backgroundFillStyle;

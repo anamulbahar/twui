@@ -72,7 +72,7 @@
 }
 
 - (void)setAttributedString:(NSAttributedString *)attributedString {
-	_textRenderer.attributedString = attributedString;
+	_textRenderer.attributedString = (TUITextStorage *)attributedString;
 	[self setNeedsDisplay];
 }
 

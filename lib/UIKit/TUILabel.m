@@ -15,157 +15,175 @@
  */
 
 #import "TUILabel.h"
-#import "TUINSView.h"
+#import "TUICGAdditions.h"
 #import "TUITextRenderer.h"
-
-@interface TUILabel () {
-	struct {
-		unsigned int selectable:1;
-	} _textLabelFlags;
-}
-
-- (void)_recreateAttributedString;
-@end
 
 @implementation TUILabel
 
-@synthesize renderer;
-@synthesize text=_text;
-@synthesize font=_font;
-@synthesize textColor=_textColor;
-@synthesize alignment=_alignment;
-@synthesize lineBreakMode = _lineBreakMode;
-
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
 	if((self = [super initWithFrame:frame])) {
-		renderer = [[TUITextRenderer alloc] init];
-		renderer.verticalAlignment = TUITextVerticalAlignmentMiddle;
-		[self setTextRenderers:[NSArray arrayWithObjects:renderer, nil]];
+		_renderer = [[TUITextRenderer alloc] init];
+		
+		self.renderer.verticalAlignment = TUITextVerticalAlignmentMiddle;
+		self.renderer.shadowBlur = 0.0f;
+		self.renderer.shadowOffset = CGSizeMake(0, 1);
 		
 		_lineBreakMode = TUILineBreakModeClip;
-		_alignment = TUITextAlignmentLeft;
+		_textAlignment = TUITextAlignmentLeft;
+		
+		self.minimumFontSize = 4.0f;
+		self.numberOfLines = 1;
+		
+		self.enabled = YES;
+		self.clipsToBounds = YES;
+		self.userInteractionEnabled = NO;
+		self.textRenderers = @[self.renderer];
 	}
 	return self;
 }
 
-
-- (NSMenu *)menuForEvent:(NSEvent *)event
-{
-	NSMenu *m = [[NSMenu alloc] initWithTitle:@""];
+- (NSMenu *)menuForEvent:(NSEvent *)event {
+	if(!self.enabled)
+		return nil;
 	
-	{
-		NSMenuItem *i = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy",nil) action:@selector(copyText:) keyEquivalent:@""];
+	NSMenu *m = [[NSMenu alloc] initWithTitle:@""]; {
+		NSMenuItem *i = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", nil)
+												   action:@selector(copyText:) keyEquivalent:@""];
 		[i setKeyEquivalent:@"c"];
 		[i setKeyEquivalentModifierMask:NSCommandKeyMask];
 		[i setTarget:self];
 		[m addItem:i];
-		
 	}
 	
 	return m;
 }
-- (void)copyText:(id)sender
-{
-	[[NSPasteboard generalPasteboard] clearContents];
-	[[NSPasteboard generalPasteboard] writeObjects:[NSArray arrayWithObjects:[renderer selectedString], nil]];
-}
-- (void)drawRect:(CGRect)rect
-{
-	if(renderer.attributedString == nil) {
-		[self _recreateAttributedString];
-	}
+
+- (void)copyText:(id)sender {
+	if(!self.enabled)
+		return;
 	
-	[super drawRect:rect]; // draw background
-	CGRect bounds = self.bounds;
-	renderer.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
-	[renderer draw];	
+	[[NSPasteboard generalPasteboard] clearContents];
+	[[NSPasteboard generalPasteboard] writeObjects:[NSArray arrayWithObjects:self.renderer.selectedString, nil]];
 }
 
-- (void)_update
-{
+- (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
+	if(!self.renderer.attributedString)
+		[self _recreateAttributedString];
+	
+	CGContextSetAlpha(TUIGraphicsGetCurrentContext(), self.enabled ? 1.0 : 0.7);
+	self.renderer.frame = (CGRect) {
+		.size = [self.renderer sizeConstrainedToWidth:self.bounds.size.width numberOfLines:self.numberOfLines]
+	};
+	
+	[self.renderer draw];
+}
+
+- (TUITextStorage *)attributedString {
+	if(!self.renderer.attributedString)
+		[self _recreateAttributedString];
+	
+	return self.renderer.attributedString;
+}
+
+- (void)setAttributedString:(TUITextStorage *)a {
+	self.renderer.attributedString = a;
 	[self setNeedsDisplay];
 }
 
-- (NSAttributedString *)attributedString
-{
-	if(renderer.attributedString == nil) {
-		[self _recreateAttributedString];
-	}
-	
-	return renderer.attributedString;
-}
-
-- (void)setAttributedString:(NSAttributedString *)a
-{
-	renderer.attributedString = a;
-	[self _update];
-}
-
-- (void)_recreateAttributedString
-{
-	if(_text == nil) return;
+- (void)_recreateAttributedString {
+	if(!_text)
+		return;
 	
 	TUITextStorage *newAttributedString = [TUITextStorage storageWithString:_text];
-	if(_font != nil) newAttributedString.font = _font;
-	if(_textColor != nil) newAttributedString.textColor = _textColor;
-	[newAttributedString setAlignment:self.alignment lineBreakMode:self.lineBreakMode];
-	self.attributedString = newAttributedString;
+	
+	if(self.font)
+		newAttributedString.font = self.font;
+	if(self.textColor && !self.highlighted)
+		newAttributedString.color = self.textColor;
+	else if(self.highlightedTextColor && self.highlighted)
+		newAttributedString.color = self.highlightedTextColor;
+	
+	[newAttributedString setAlignment:self.textAlignment lineBreakMode:self.lineBreakMode];
+	self.textStorage = newAttributedString;
 }
 
-- (BOOL)isSelectable
-{
-	return _textLabelFlags.selectable;
-}
-
-- (void)setSelectable:(BOOL)b
-{
-	_textLabelFlags.selectable = b;
-}
-
-- (void)setText:(NSString *)text
-{
-	if(text == _text) return;
+- (void)setText:(NSString *)text {
+	if([text isEqualToString:_text])
+		return;
 	
 	_text = [text copy];
-	
-	self.attributedString = nil;
+	self.textStorage = nil;
+	[self setNeedsDisplay];
 }
 
-- (void)setFont:(NSFont *)font
-{
-	if(font == _font) return;
+- (void)setFont:(NSFont *)font {
+	if([font isEqual:_font])
+		return;
 	
 	_font = font;
-	
-	self.attributedString = nil;
+	self.textStorage = nil;
+	[self setNeedsDisplay];
 }
 
-- (void)setTextColor:(NSColor *)textColor
-{
-	if(textColor == _textColor) return;
+- (void)setTextColor:(NSColor *)textColor {
+	if([textColor isEqual:_textColor])
+		return;
 	
 	_textColor = textColor;
-	
-	self.attributedString = nil;
+	self.textStorage = nil;
+	[self setNeedsDisplay];
 }
 
-- (void)setAlignment:(TUITextAlignment)alignment
-{
-	if(alignment == _alignment) return;
+- (void)setAlignment:(TUITextAlignment)alignment {
+	if(alignment == _textAlignment)
+		return;
 	
-	_alignment = alignment;
-	
-	self.attributedString = nil;
+	_textAlignment = alignment;
+	self.textStorage = nil;
+	[self setNeedsDisplay];
 }
 
-- (void)setLineBreakMode:(TUILineBreakMode)lineBreakMode
-{
-	if (lineBreakMode == _lineBreakMode) return;
+- (void)setLineBreakMode:(TUILineBreakMode)lineBreakMode {
+	if (lineBreakMode == _lineBreakMode)
+		return;
 	
 	_lineBreakMode = lineBreakMode;
+	self.textStorage = nil;
+	[self setNeedsDisplay];
+}
+
+- (void)setShadowColor:(NSColor *)shadowColor {
+	self.renderer.shadowColor = shadowColor;
+	[self setNeedsDisplay];
+}
+
+- (void)setShadowOffset:(CGSize)shadowOffset {
+	self.renderer.shadowOffset = shadowOffset;
+	[self setNeedsDisplay];
+}
+
+- (NSColor *)shadowColor {
+	return self.renderer.shadowColor;
+}
+
+- (CGSize)shadowOffset {
+	return self.renderer.shadowOffset;
+}
+
+- (void)setEnabled:(BOOL)enabled {
+	if(_enabled == enabled)
+		return;
 	
-	self.attributedString = nil;
+	_enabled = enabled;
+	self.renderer.shouldRefuseFirstResponder = !enabled;
+}
+
+- (void)sizeToFit {
+	self.frame = (CGRect) {
+		.origin = self.frame.origin,
+		.size = [self.renderer sizeConstrainedToWidth:self.bounds.size.width numberOfLines:self.numberOfLines]
+	};
 }
 
 @end

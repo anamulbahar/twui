@@ -65,12 +65,12 @@ NSString *const TUITextStoragePreDrawBlockName = @"TUITextStoragePreDrawBlockNam
 	[self setFont:font inRange:self.stringRange];
 }
 
-- (void)setTextColor:(NSColor *)color inRange:(NSRange)range {
+- (void)setColor:(NSColor *)color inRange:(NSRange)range {
 	[self addAttribute:NSForegroundColorAttributeName value:color range:range];
 }
 
-- (void)setTextColor:(NSColor *)color {
-	[self setTextColor:color inRange:self.stringRange];
+- (void)setColor:(NSColor *)color {
+	[self setColor:color inRange:self.stringRange];
 }
 
 - (void)setShadow:(NSShadow *)shadow inRange:(NSRange)range {
@@ -202,7 +202,7 @@ NSString *const TUITextStoragePreDrawBlockName = @"TUITextStoragePreDrawBlockNam
 	return nil;
 }
 
-- (NSColor *)textColor {
+- (NSColor *)color {
 	return nil;
 }
 
