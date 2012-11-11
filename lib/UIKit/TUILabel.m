@@ -106,9 +106,9 @@
 {
 	if(_text == nil) return;
 	
-	TUIAttributedString *newAttributedString = [TUIAttributedString stringWithString:_text];
+	TUITextStorage *newAttributedString = [TUITextStorage storageWithString:_text];
 	if(_font != nil) newAttributedString.font = _font;
-	if(_textColor != nil) newAttributedString.color = _textColor;
+	if(_textColor != nil) newAttributedString.textColor = _textColor;
 	[newAttributedString setAlignment:self.alignment lineBreakMode:self.lineBreakMode];
 	self.attributedString = newAttributedString;
 }

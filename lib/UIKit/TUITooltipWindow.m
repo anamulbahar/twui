@@ -15,7 +15,7 @@
  */
 
 #import "TUITooltipWindow.h"
-#import "TUIAttributedString.h"
+#import "TUITextStorage.h"
 #import "TUICGAdditions.h"
 #import "TUIStringDrawing.h"
 
@@ -23,7 +23,7 @@
 #define SWITCH_DELAY 0.2
 #define FADE_OUT_SPEED 0.07
 
-static TUIAttributedString *CurrentTooltipString = nil;
+static TUITextStorage *CurrentTooltipString = nil;
 static NSTimer *FadeOutTimer = nil;
 
 @interface TUITooltipWindowView : NSView
@@ -138,7 +138,7 @@ static BOOL ShowingTooltip = NO;
 			[self performSelector:@selector(_beginTooltip) withObject:nil afterDelay:delay];
 		}
 		
-		CurrentTooltipString = [TUIAttributedString stringWithString:s];
+		CurrentTooltipString = [TUITextStorage storageWithString:s];
 		CurrentTooltipString.font = [NSFont fontWithName:@"HelveticaNeue" size:11];
 		CurrentTooltipString.kerning = 0.2;
 		[CurrentTooltipString setAlignment:TUITextAlignmentCenter lineBreakMode:TUILineBreakModeClip];

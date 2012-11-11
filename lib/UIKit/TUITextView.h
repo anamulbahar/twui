@@ -16,7 +16,7 @@
 
 #import "TUIControl.h"
 #import "TUIGeometry.h"
-#import "TUIAttributedString.h"
+#import "TUITextStorage.h"
 
 @class TUITextEditor;
 @class NSFont;

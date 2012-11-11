@@ -15,7 +15,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "TUIAttributedString.h"
+#import "TUITextStorage.h"
 
 @class NSFont;
 

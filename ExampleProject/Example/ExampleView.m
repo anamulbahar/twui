@@ -110,7 +110,7 @@
 				[image drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0]; // draw 'image' (might be the regular one, or the dynamically generated one)
 
 				// draw the index
-				TUIAttributedString *s = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"%ld", v.tag]];
+				TUITextStorage *s = [TUITextStorage storageWithString:[NSString stringWithFormat:@"%ld", v.tag]];
 				[s ab_drawInRect:CGRectOffset(imageRect, imageRect.size.width, -15)];
 			};
 		}
@@ -146,8 +146,8 @@
 - (TUIView *)tableView:(TUITableView *)tableView headerViewForSection:(NSInteger)section
 {
 	ExampleSectionHeaderView *view = [[ExampleSectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 32)];
-	TUIAttributedString *title = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"Example Section %d", (int)section]];
-	title.color = [NSColor blackColor];
+	TUITextStorage *title = [TUITextStorage storageWithString:[NSString stringWithFormat:@"Example Section %d", (int)section]];
+	title.textColor = [NSColor blackColor];
 	title.font = exampleFont2;
 	view.labelRenderer.attributedString = title;
 	
@@ -186,8 +186,8 @@
 {
 	ExampleTableViewCell *cell = reusableTableCellOfClass(tableView, ExampleTableViewCell);
 	
-	TUIAttributedString *s = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"example cell %d", (int)indexPath.row]];
-	s.color = [NSColor blackColor];
+	TUITextStorage *s = [TUITextStorage storageWithString:[NSString stringWithFormat:@"example cell %d", (int)indexPath.row]];
+	s.textColor = [NSColor blackColor];
 	s.font = exampleFont1;
 	[s setFont:exampleFont2 inRange:NSMakeRange(8, 4)]; // make the word "cell" bold
 	cell.attributedString = s;

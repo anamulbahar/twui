@@ -17,7 +17,7 @@
 #import "TUITextRenderer.h"
 #import "ABActiveRange.h"
 #import "NSColor+TUIExtensions.h"
-#import "TUIAttributedString.h"
+#import "TUITextStorage.h"
 #import "TUICGAdditions.h"
 #import "TUIStringDrawing.h"
 #import "TUIView.h"
@@ -233,12 +233,12 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 		CGContextSaveGState(context);
 		
 		if(_flags.preDrawBlocksEnabled && !_flags.drawMaskDragSelection) {
-			[self.drawingAttributedString enumerateAttribute:TUIAttributedStringPreDrawBlockName inRange:NSMakeRange(0, [self.drawingAttributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+			[self.drawingAttributedString enumerateAttribute:TUITextStoragePreDrawBlockName inRange:NSMakeRange(0, [self.drawingAttributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
 				if(value == NULL) return;
 				
 				CGContextSaveGState(context);
 				
-				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.drawingAttributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
+				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.drawingAttributedString attribute:TUITextStorageBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
 				NSArray *rectsArray = [self rectsForCharacterRange:CFRangeMake(range.location, range.length) aggregationType:aggregationType];
 				
 				CFIndex rectCount = rectsArray.count;
@@ -247,7 +247,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 					rects[i] = [[rectsArray objectAtIndex:i] rectValue];
 				}
 				
-				TUIAttributedStringPreDrawBlock block = value;
+				TUITextStoragePreDrawBlock block = value;
 				block(self.drawingAttributedString, range, rects, rectCount);
 					
 				CGContextRestoreGState(context);
@@ -257,13 +257,13 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 		if(_flags.backgroundDrawingEnabled && !_flags.drawMaskDragSelection) {
 			CGContextSaveGState(context);
 			
-			[self.drawingAttributedString enumerateAttribute:TUIAttributedStringBackgroundColorAttributeName inRange:NSMakeRange(0, [self.drawingAttributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+			[self.drawingAttributedString enumerateAttribute:TUITextStorageBackgroundColorAttributeName inRange:NSMakeRange(0, [self.drawingAttributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
 				if(value == NULL) return;
 				
 				CGColorRef color = (__bridge CGColorRef) value;
 				CGContextSetFillColorWithColor(context, color);
 				
-				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.drawingAttributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
+				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.drawingAttributedString attribute:TUITextStorageBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
 				NSArray *rectsArray = [self rectsForCharacterRange:CFRangeMake(range.location, range.length) aggregationType:aggregationType];
 				
 				CFIndex rectCount = rectsArray.count;

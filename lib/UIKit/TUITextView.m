@@ -99,7 +99,7 @@
 		[attributes setObject:(__bridge id)self.textColor.tui_CGColor forKey:(__bridge id)kCTForegroundColorAttributeName];
 	}
 	
-	NSParagraphStyle *style = ABNSParagraphStyleForTextAlignment(textAlignment);
+	NSParagraphStyle *style = NSSParagraphStyleForTUITextAlignment(textAlignment);
 	if (style != nil) {
 		[attributes setObject:style forKey:NSParagraphStyleAttributeName];
 	}
@@ -346,9 +346,9 @@ static CAAnimation *ThrobAnimation()
 	[renderer draw];
 	
 	if(renderer.attributedString.length < 1 && self.placeholder.length > 0) {
-		TUIAttributedString *attributedString = [TUIAttributedString stringWithString:self.placeholder];
+		TUITextStorage *attributedString = [TUITextStorage storageWithString:self.placeholder];
 		attributedString.font = self.font;
-		attributedString.color = [self.textColor colorWithAlphaComponent:0.4f];
+		attributedString.textColor = [self.textColor colorWithAlphaComponent:0.4f];
 		
 		self.placeholderRenderer.attributedString = attributedString;
 		self.placeholderRenderer.frame = rendererFrame;
@@ -367,7 +367,7 @@ static CAAnimation *ThrobAnimation()
 	
 	if(fakeMetrics) {
 		// setup fake stuff - fake character with font
-		TUIAttributedString *fake = [TUIAttributedString stringWithString:@"M"];
+		TUITextStorage *fake = [TUITextStorage storageWithString:@"M"];
 		fake.font = self.font;
 		renderer.attributedString = fake;
 		selection = NSMakeRange(0, 0);

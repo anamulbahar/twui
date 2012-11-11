@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-#import "TUIAttributedString.h"
+#import "TUITextStorage.h"
 #import "TUICGAdditions.h"
 #import "TUIStringDrawing.h"
 #import "TUITextRenderer.h"
@@ -69,14 +69,14 @@
 
 - (CGSize)ab_sizeWithFont:(NSFont *)font
 {
-	TUIAttributedString *s = [TUIAttributedString stringWithString:self];
+	TUITextStorage *s = [TUITextStorage storageWithString:self];
 	s.font = font;
 	return [s ab_size];
 }
 
 - (CGSize)ab_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size
 {
-	TUIAttributedString *s = [TUIAttributedString stringWithString:self];
+	TUITextStorage *s = [TUITextStorage storageWithString:self];
 	s.font = font;
 	return [s ab_sizeConstrainedToSize:size];
 }
@@ -90,15 +90,15 @@
 
 - (CGSize)ab_drawInRect:(CGRect)rect color:(NSColor *)color font:(NSFont *)font
 {
-	TUIAttributedString *s = [TUIAttributedString stringWithString:self];
-	s.color = color;
+	TUITextStorage *s = [TUITextStorage storageWithString:self];
+	s.textColor = color;
 	s.font = font;
 	return [s ab_drawInRect:rect];
 }
 
 - (CGSize)ab_drawInRect:(CGRect)rect withFont:(NSFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment
 {
-	TUIAttributedString *s = [TUIAttributedString stringWithString:self];
+	TUITextStorage *s = [TUITextStorage storageWithString:self];
 	[s addAttribute:(NSString *)kCTForegroundColorFromContextAttributeName 
 			  value:(id)[NSNumber numberWithBool:YES] 
 			  range:NSMakeRange(0, [self length])];

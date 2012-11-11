@@ -15,7 +15,7 @@
  */
 
 #import "TUIView.h"
-#import "TUIAttributedString.h"
+#import "TUITextStorage.h"
 
 /*
  Check out TUITextRenderer, you probably want to use that to get
