@@ -23,14 +23,24 @@
 	if((self = [super initWithFrame:frame])) {
 		self.backgroundColor = [NSColor colorWithCalibratedWhite:0.9 alpha:1.0];
 		
-		_scrollView = [[TUIScrollView alloc] initWithFrame:self.bounds];
-		_scrollView.autoresizingMask = TUIViewAutoresizingFlexibleSize;
-		_scrollView.scrollIndicatorStyle = TUIScrollViewIndicatorStyleDefault;
-		[self addSubview:_scrollView];
+		self.textField = [[TUITextField alloc] initWithFrame:CGRectMake(100, 100, 200, 22)];
+		self.textField.layoutName = @"textField";
+		self.textField.backgroundColor = [NSColor clearColor];
+		self.textField.textColor = [NSColor darkGrayColor];
+		self.textField.cursorColor = [NSColor darkGrayColor];
+		self.textField.font = [NSFont systemFontOfSize:12.0f];
+		self.textField.contentInset = TUIEdgeInsetsMake(2, 2, 2, 2);
+		self.textField.placeholder = @"textField";
+		[self addSubview:self.textField];
 		
-		TUIImageView *imageView = [[TUIImageView alloc] initWithImage:[NSImage imageNamed:@"large-image.jpeg"]];
-		[_scrollView addSubview:imageView];
-		[_scrollView setContentSize:imageView.frame.size];
+		//_scrollView = [[TUIScrollView alloc] initWithFrame:self.bounds];
+		//_scrollView.autoresizingMask = TUIViewAutoresizingFlexibleSize;
+		//_scrollView.scrollIndicatorStyle = TUIScrollViewIndicatorStyleDefault;
+		//[self addSubview:_scrollView];
+		
+		//TUIImageView *imageView = [[TUIImageView alloc] initWithImage:[NSImage imageNamed:@"large-image.jpeg"]];
+		//[_scrollView addSubview:imageView];
+		//[_scrollView setContentSize:imageView.frame.size];
 		
 	}
 	return self;

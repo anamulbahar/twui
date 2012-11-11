@@ -22,4 +22,6 @@
   TUIScrollView * _scrollView;
 }
 
+@property (nonatomic, strong) TUITextField *textField;
+
 @end
