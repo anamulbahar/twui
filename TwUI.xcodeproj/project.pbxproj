@@ -30,6 +30,18 @@
 		4866F6E91650B30D00445F56 /* NSAttributedString+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F6E51650B30C00445F56 /* NSAttributedString+TUIExtensions.m */; };
 		4866F6EA1650B30D00445F56 /* NSAttributedString+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F6E51650B30C00445F56 /* NSAttributedString+TUIExtensions.m */; };
 		4866F6EB1650B30D00445F56 /* NSAttributedString+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F6E51650B30C00445F56 /* NSAttributedString+TUIExtensions.m */; };
+		4866F6FA1650CB1700445F56 /* NSValue+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4866F6F81650CB1700445F56 /* NSValue+TUIExtensions.h */; };
+		4866F6FB1650CB1700445F56 /* NSValue+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4866F6F81650CB1700445F56 /* NSValue+TUIExtensions.h */; };
+		4866F6FC1650CB1700445F56 /* NSValue+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4866F6F81650CB1700445F56 /* NSValue+TUIExtensions.h */; };
+		4866F6FD1650CB1700445F56 /* NSValue+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F6F91650CB1700445F56 /* NSValue+TUIExtensions.m */; };
+		4866F6FE1650CB1700445F56 /* NSValue+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F6F91650CB1700445F56 /* NSValue+TUIExtensions.m */; };
+		4866F6FF1650CB1700445F56 /* NSValue+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F6F91650CB1700445F56 /* NSValue+TUIExtensions.m */; };
+		4866F7021650CCA500445F56 /* NSCoder+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4866F7001650CCA500445F56 /* NSCoder+TUIExtensions.h */; };
+		4866F7031650CCA500445F56 /* NSCoder+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4866F7001650CCA500445F56 /* NSCoder+TUIExtensions.h */; };
+		4866F7041650CCA500445F56 /* NSCoder+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4866F7001650CCA500445F56 /* NSCoder+TUIExtensions.h */; };
+		4866F7051650CCA600445F56 /* NSCoder+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F7011650CCA500445F56 /* NSCoder+TUIExtensions.m */; };
+		4866F7061650CCA600445F56 /* NSCoder+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F7011650CCA500445F56 /* NSCoder+TUIExtensions.m */; };
+		4866F7071650CCA600445F56 /* NSCoder+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4866F7011650CCA500445F56 /* NSCoder+TUIExtensions.m */; };
 		488A5833162FBE9B006CBF8B /* TUITableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 488A5831162FBE9B006CBF8B /* TUITableViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		488A5834162FBE9B006CBF8B /* TUITableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 488A5831162FBE9B006CBF8B /* TUITableViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		488A5835162FBE9B006CBF8B /* TUITableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 488A5831162FBE9B006CBF8B /* TUITableViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -441,6 +453,10 @@
 		4866F6DD1650B27A00445F56 /* NSString+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+TUIExtensions.m"; sourceTree = "<group>"; };
 		4866F6E41650B30A00445F56 /* NSAttributedString+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+TUIExtensions.h"; sourceTree = "<group>"; };
 		4866F6E51650B30C00445F56 /* NSAttributedString+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+TUIExtensions.m"; sourceTree = "<group>"; };
+		4866F6F81650CB1700445F56 /* NSValue+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSValue+TUIExtensions.h"; sourceTree = "<group>"; };
+		4866F6F91650CB1700445F56 /* NSValue+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSValue+TUIExtensions.m"; sourceTree = "<group>"; };
+		4866F7001650CCA500445F56 /* NSCoder+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCoder+TUIExtensions.h"; sourceTree = "<group>"; };
+		4866F7011650CCA500445F56 /* NSCoder+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCoder+TUIExtensions.m"; sourceTree = "<group>"; };
 		487068981628CBCF005D7096 /* TUITableViewCell+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TUITableViewCell+Private.h"; sourceTree = "<group>"; };
 		488A5831162FBE9B006CBF8B /* TUITableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITableViewController.h; sourceTree = "<group>"; };
 		488A5832162FBE9B006CBF8B /* TUITableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITableViewController.m; sourceTree = "<group>"; };
@@ -768,6 +784,8 @@
 				D0C7655A15B6297200E7AC2C /* NSClipView+TUIExtensions.m */,
 				D0EA12EF15C34FEA00FAA603 /* NSColor+TUIExtensions.h */,
 				D0EA12F015C34FEA00FAA603 /* NSColor+TUIExtensions.m */,
+				4866F7001650CCA500445F56 /* NSCoder+TUIExtensions.h */,
+				4866F7011650CCA500445F56 /* NSCoder+TUIExtensions.m */,
 				D05D239E15BF7239000ED14F /* NSImage+TUIExtensions.h */,
 				D05D239F15BF7239000ED14F /* NSImage+TUIExtensions.m */,
 				D0C7655B15B6297300E7AC2C /* NSScrollView+TUIExtensions.h */,
@@ -776,6 +794,8 @@
 				4866F6C5164F4AE300445F56 /* NSShadow+TUIExtensions.m */,
 				4866F6DC1650B27900445F56 /* NSString+TUIExtensions.h */,
 				4866F6DD1650B27A00445F56 /* NSString+TUIExtensions.m */,
+				4866F6F81650CB1700445F56 /* NSValue+TUIExtensions.h */,
+				4866F6F91650CB1700445F56 /* NSValue+TUIExtensions.m */,
 				D0C7653115B624D800E7AC2C /* NSView+TUIExtensions.h */,
 				D0C7653215B624D800E7AC2C /* NSView+TUIExtensions.m */,
 				CBB74C3E13BE6E1900C85CB5 /* TUIAccessibility.h */,
@@ -951,6 +971,8 @@
 				4866F6C8164F4AE300445F56 /* NSShadow+TUIExtensions.h in Headers */,
 				4866F6E01650B27C00445F56 /* NSString+TUIExtensions.h in Headers */,
 				4866F6E81650B30D00445F56 /* NSAttributedString+TUIExtensions.h in Headers */,
+				4866F6FC1650CB1700445F56 /* NSValue+TUIExtensions.h in Headers */,
+				4866F7041650CCA500445F56 /* NSCoder+TUIExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1024,6 +1046,8 @@
 				4866F6C6164F4AE300445F56 /* NSShadow+TUIExtensions.h in Headers */,
 				4866F6DE1650B27C00445F56 /* NSString+TUIExtensions.h in Headers */,
 				4866F6E61650B30D00445F56 /* NSAttributedString+TUIExtensions.h in Headers */,
+				4866F6FA1650CB1700445F56 /* NSValue+TUIExtensions.h in Headers */,
+				4866F7021650CCA500445F56 /* NSCoder+TUIExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1061,6 +1085,8 @@
 				4866F6C7164F4AE300445F56 /* NSShadow+TUIExtensions.h in Headers */,
 				4866F6DF1650B27C00445F56 /* NSString+TUIExtensions.h in Headers */,
 				4866F6E71650B30D00445F56 /* NSAttributedString+TUIExtensions.h in Headers */,
+				4866F6FB1650CB1700445F56 /* NSValue+TUIExtensions.h in Headers */,
+				4866F7031650CCA500445F56 /* NSCoder+TUIExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1342,6 +1368,8 @@
 				4866F6CB164F4AE300445F56 /* NSShadow+TUIExtensions.m in Sources */,
 				4866F6E31650B27C00445F56 /* NSString+TUIExtensions.m in Sources */,
 				4866F6EB1650B30D00445F56 /* NSAttributedString+TUIExtensions.m in Sources */,
+				4866F6FF1650CB1700445F56 /* NSValue+TUIExtensions.m in Sources */,
+				4866F7071650CCA600445F56 /* NSCoder+TUIExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1417,6 +1445,8 @@
 				4866F6C9164F4AE300445F56 /* NSShadow+TUIExtensions.m in Sources */,
 				4866F6E11650B27C00445F56 /* NSString+TUIExtensions.m in Sources */,
 				4866F6E91650B30D00445F56 /* NSAttributedString+TUIExtensions.m in Sources */,
+				4866F6FD1650CB1700445F56 /* NSValue+TUIExtensions.m in Sources */,
+				4866F7051650CCA600445F56 /* NSCoder+TUIExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1498,6 +1528,8 @@
 				4866F6CA164F4AE300445F56 /* NSShadow+TUIExtensions.m in Sources */,
 				4866F6E21650B27C00445F56 /* NSString+TUIExtensions.m in Sources */,
 				4866F6EA1650B30D00445F56 /* NSAttributedString+TUIExtensions.m in Sources */,
+				4866F6FE1650CB1700445F56 /* NSValue+TUIExtensions.m in Sources */,
+				4866F7061650CCA600445F56 /* NSCoder+TUIExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
