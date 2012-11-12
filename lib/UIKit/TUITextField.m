@@ -316,27 +316,30 @@ static CAAnimation* TUICursorThrobAnimation() {
 		[self.cursor.layer addAnimation:TUICursorThrobAnimation() forKey:@"opacity"];
 	}
 	
-	// Get the cursor and text metrics ready.
-	CGRect cursorRect = [self _cursorRect];
-	CGRect textRect = TUIEdgeInsetsInsetRect(self.bounds, self.contentInset);
 	
 	// Our text field width should be as large as possible to allow scroll.
+	CGRect textRect = TUIEdgeInsetsInsetRect(self.bounds, self.contentInset);
 	CGRect rendererFrame = textRect;
 	rendererFrame.size.width = HUGE_VALF;
+	
 	self.editor.frame = rendererFrame;
+	CGRect cursorRect = [self _cursorRect];
 	
 	// Single-line text views scroll horizontally with the cursor.
 	// Note: Currently not working-- NEEDS FIX.
+	NSRange selection = self.editor.selectedRange;
 	if(CGRectGetMaxX(cursorRect) > CGRectGetWidth(textRect)) {
-		CGFloat offset = CGRectGetMinX(cursorRect) - CGRectGetWidth(textRect);
-		cursorRect = CGRectOffset(cursorRect, -offset - CGRectGetWidth(cursorRect) - 5.0f, 0.0f);
+		CGRect characterRect = CGRectIntegral([self.editor firstRectForCharacterRange:ABCFRangeFromNSRange(selection)]);
+		CGFloat offset = CGRectGetMaxX(characterRect) - CGRectGetWidth(textRect);
 		
 		rendererFrame = (CGRect) {
 			.size = rendererFrame.size,
 			.origin.y = rendererFrame.origin.y,
 			.origin.x = -offset
 		};
+		
 		self.editor.frame = rendererFrame;
+		cursorRect = [self _cursorRect];
 	}
 	
 	// If the cursor is displayed, position it without animations.
