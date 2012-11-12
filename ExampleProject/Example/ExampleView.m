@@ -111,7 +111,7 @@
 
 				// draw the index
 				TUITextStorage *s = [TUITextStorage storageWithString:[NSString stringWithFormat:@"%ld", v.tag]];
-				[s ab_drawInRect:CGRectOffset(imageRect, imageRect.size.width, -15)];
+				[s drawInRect:CGRectOffset(imageRect, imageRect.size.width, -15)];
 			};
 		}
 	}

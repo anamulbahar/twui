@@ -15,9 +15,10 @@
  */
 
 #import "TUITooltipWindow.h"
-#import "TUITextStorage.h"
 #import "TUICGAdditions.h"
-#import "TUIStringDrawing.h"
+
+#import "TUITextStorage.h"
+#import "NSAttributedString+TUIExtensions.h"
 
 #define TOOLTIP_HEIGHT 18
 #define SWITCH_DELAY 0.2
@@ -45,7 +46,7 @@ static NSTimer *FadeOutTimer = nil;
 	CGContextDrawLinearGradientBetweenPoints(ctx, CGPointMake(0, b.size.height), _a, CGPointMake(0, 0), _b);
 	CGContextRestoreGState(ctx);
 	
-	[CurrentTooltipString ab_drawInRect:CGRectMake(0, -2, b.size.width, b.size.height)];
+	[CurrentTooltipString drawInRect:CGRectMake(0, -2, b.size.width, b.size.height)];
 }
 
 @end
@@ -79,7 +80,7 @@ static BOOL ShowingTooltip = NO;
 
 + (CGRect)_tooltipRect
 {
-	CGFloat width = [CurrentTooltipString ab_size].width + 5;
+	CGFloat width = [CurrentTooltipString size].width + 5;
 	NSPoint p = [NSEvent mouseLocation];
 	NSRect r = NSMakeRect(p.x - width*0.5 + 15, p.y - 37, width, TOOLTIP_HEIGHT);
 	return r;

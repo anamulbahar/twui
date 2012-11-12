@@ -15,12 +15,15 @@
  */
 
 #import "TUITextRenderer.h"
-#import "ABActiveRange.h"
-#import "NSColor+TUIExtensions.h"
 #import "TUITextStorage.h"
-#import "TUICGAdditions.h"
-#import "TUIStringDrawing.h"
+
 #import "TUIView.h"
+#import "ABActiveRange.h"
+#import "TUICGAdditions.h"
+
+#import "NSColor+TUIExtensions.h"
+//#import "NSString+TUIExtensions.h"
+#import "NSAttributedString+TUIExtensions.h"
 
 NSString *const TUITextRendererDidBecomeFirstResponder = @"TUITextRendererDidBecomeFirstResponder";
 NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidResignFirstResponder";
@@ -372,7 +375,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 	
 	NSMutableAttributedString *fake = [self.drawingAttributedString mutableCopy];
 	[fake replaceCharactersInRange:NSMakeRange(0, [fake length]) withString:@"M"];
-	CGFloat singleLineHeight = [fake ab_sizeConstrainedToWidth:width].height;
+	CGFloat singleLineHeight = [fake sizeConstrainedToWidth:width].height;
 	CGFloat maxHeight = singleLineHeight * numberOfLines;
 	CGSize size = [self sizeConstrainedToWidth:width];
 	return CGSizeMake(size.width, MIN(maxHeight, size.height));
