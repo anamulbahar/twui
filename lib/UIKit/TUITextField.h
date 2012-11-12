@@ -35,7 +35,6 @@
 #import "TUITextStorage.h"
 #import "TUITextEditor.h"
 
-@class TUIButton;
 @protocol TUITextFieldDelegate;
 
 @interface TUITextField : TUIControl
@@ -44,22 +43,29 @@
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *placeholder;
-@property (nonatomic, strong) NSFont *font;
-@property (nonatomic, strong) NSColor *textColor;
-@property (nonatomic, strong) NSColor *cursorColor;
-@property (nonatomic, assign) CGFloat cursorWidth;
-@property (nonatomic, assign) TUITextAlignment textAlignment;
-@property (nonatomic, assign) TUIEdgeInsets contentInset;
 
 @property (nonatomic, strong, readonly) TUITextRenderer *renderer;
 @property (nonatomic, strong, readonly) TUITextRenderer *placeholderRenderer;
 
-@property (nonatomic, assign) NSRange selectedRange;
-@property (nonatomic, assign, getter=isEditable) BOOL editable;
-@property (nonatomic, assign, getter=isSpellCheckingEnabled) BOOL spellCheckingEnabled;
-@property (nonatomic, assign, getter=isAutocorrectionEnabled) BOOL autocorrectionEnabled;
+@property (nonatomic, strong) NSFont *font;
+@property (nonatomic, strong) NSColor *textColor;
+@property (nonatomic, assign) TUITextAlignment textAlignment;
 
-@property (nonatomic, strong) TUIButton *rightButton;
+@property (nonatomic, assign) BOOL clearsOnBeginEditing;
+
+// Dysfunctional.
+@property (nonatomic, assign) BOOL adjustsFontSizeToFitWidth;
+@property (nonatomic, assign) CGFloat minimumFontSize;
+
+@property (nonatomic, strong) NSColor *cursorColor;
+@property (nonatomic, assign) CGFloat cursorWidth;
+@property (nonatomic, assign) TUIEdgeInsets contentInset;
+
+@property (nonatomic, assign) NSRange selectedRange;
+@property (nonatomic, assign, getter = isEditable) BOOL editable;
+@property (nonatomic, assign, getter = isSpellCheckingEnabled) BOOL spellCheckingEnabled;
+@property (nonatomic, assign, getter = isAutocorrectionEnabled) BOOL autocorrectionEnabled;
+
 @property (nonatomic, copy) TUIViewDrawRect drawFrame;
 
 - (BOOL)doCommandBySelector:(SEL)selector;
@@ -70,15 +76,14 @@
 
 @optional
 
-- (void)textFieldDidChange:(TUITextField *)textField;
-
 // return YES if the implementation consumes the selector, NO if it should be passed up to super.
 - (BOOL)textField:(TUITextField *)textField doCommandBySelector:(SEL)commandSelector;
+- (void)textFieldDidChange:(TUITextField *)textField;
 
-- (void)textFieldWillBecomeFirstResponder:(TUITextField *)textField;
-- (void)textFieldDidBecomeFirstResponder:(TUITextField *)textField;
-- (void)textFieldWillResignFirstResponder:(TUITextField *)textField;
-- (void)textFieldDidResignFirstResponder:(TUITextField *)textField;
+- (void)textFieldWillBeginEditing:(TUITextField *)textField;
+- (void)textFieldDidBeginEditing:(TUITextField *)textField;
+- (void)textFieldWillEndEditing:(TUITextField *)textField;
+- (void)textFieldDidEndEditing:(TUITextField *)textField;
 
 - (BOOL)textFieldShouldReturn:(TUITextField *)textField;
 - (BOOL)textFieldShouldClear:(TUITextField *)textField;

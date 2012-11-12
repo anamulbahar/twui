@@ -15,43 +15,14 @@
  */
 
 #import "TUITextView.h"
-#import "TUICGAdditions.h"
+#import "TUITextViewEditor.h"
+#import "TUITextStorage.h"
+
 #import "TUINSView.h"
 #import "TUINSWindow.h"
-#import "TUITextViewEditor.h"
+
+#import "TUICGAdditions.h"
 #import "NSColor+TUIExtensions.h"
-
-@interface TUITextViewAutocorrectedPair : NSObject <NSCopying> {
-	NSTextCheckingResult *correctionResult;
-	NSString *originalString;
-}
-
-@property (nonatomic, retain) NSTextCheckingResult *correctionResult;
-@property (nonatomic, copy) NSString *originalString;
-@end
-
-@implementation TUITextViewAutocorrectedPair
-@synthesize correctionResult;
-@synthesize originalString;
-
-- (BOOL)isEqual:(id)object {
-	if(![object isKindOfClass:[TUITextViewAutocorrectedPair class]]) return NO;
-	
-	TUITextViewAutocorrectedPair *otherPair = object;
-	return [self.originalString isEqualToString:otherPair.originalString] && NSEqualRanges(self.correctionResult.range, otherPair.correctionResult.range);
-}
-
-- (NSUInteger)hash {
-	return [self.originalString hash] ^ self.correctionResult.range.location ^ self.correctionResult.range.length;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-	TUITextViewAutocorrectedPair *copiedPair = [[[self class] alloc] init];
-	copiedPair.correctionResult = self.correctionResult;
-	copiedPair.originalString = self.originalString;
-	return copiedPair;
-}
-@end
 
 @interface TUITextView () <TUITextRendererDelegate>
 - (void)_checkSpelling;
@@ -137,7 +108,7 @@
 		self.textColor = [NSColor blackColor];
 		[self _updateDefaultAttributes];
 		
-		self.drawFrame = TUITextViewStandardFrame();
+		self.drawFrame = TUITextFrameBezelStyle();
 
 		self.editable = YES;
 	}
@@ -454,7 +425,7 @@ static CAAnimation *ThrobAnimation()
 					NSString *backingString = [[renderer backingStore] string];
 					if(NSMaxRange(result.range) <= backingString.length) {
 						NSString *oldString = [backingString substringWithRange:result.range];
-						TUITextViewAutocorrectedPair *correctionPair = [[TUITextViewAutocorrectedPair alloc] init];
+						TUITextStorageAutocorrectedPair *correctionPair = [[TUITextStorageAutocorrectedPair alloc] init];
 						correctionPair.correctionResult = result;
 						correctionPair.originalString = oldString;
 						
@@ -500,9 +471,9 @@ static CAAnimation *ThrobAnimation()
 		}
 	}
 	
-	TUITextViewAutocorrectedPair *matchingAutocorrectPair = nil;
+	TUITextStorageAutocorrectedPair *matchingAutocorrectPair = nil;
 	if(selectedTextCheckingResult == nil) {
-		for(TUITextViewAutocorrectedPair *correctionPair in self.autocorrectedResults) {
+		for(TUITextStorageAutocorrectedPair *correctionPair in self.autocorrectedResults) {
 			NSTextCheckingResult *result = correctionPair.correctionResult;
 			if(stringIndex >= result.range.location && stringIndex <= result.range.location + result.range.length) {
 				self.selectedTextCheckingResult = result;
@@ -739,95 +710,3 @@ static CAAnimation *ThrobAnimation()
 }
 
 @end
-
-static void TUITextViewDrawRoundedFrame(TUIView *view, CGFloat radius, BOOL overDark)
-{
-	CGRect rect = view.bounds;
-	CGContextRef ctx = TUIGraphicsGetCurrentContext();
-	CGContextSaveGState(ctx);
-	
-	if(overDark) {
-		rect.size.height -= 1;
-		
-		CGContextSetRGBFillColor(ctx, 1, 1, 1, 0.4);
-		CGContextFillRoundRect(ctx, rect, radius);
-		
-		rect.origin.y += 1;
-		
-		CGContextSetRGBFillColor(ctx, 0, 0, 0, 0.65);
-		CGContextFillRoundRect(ctx, rect, radius);
-	} else {
-		rect.size.height -= 1;
-		
-		CGContextSetRGBFillColor(ctx, 1, 1, 1, 0.5);
-		CGContextFillRoundRect(ctx, rect, radius);
-		
-		rect.origin.y += 1;
-		
-		CGContextSetRGBFillColor(ctx, 0, 0, 0, 0.35);
-		CGContextFillRoundRect(ctx, rect, radius);
-	}
-	
-	rect = CGRectInset(rect, 1, 1);
-	CGContextClipToRoundRect(ctx, rect, radius);
-	CGFloat a = 0.9;
-	CGFloat b = 1.0;
-	CGFloat colorA[] = {a, a, a, 1.0};
-	CGFloat colorB[] = {b, b, b, 1.0};
-	CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);
-	CGContextFillRect(ctx, rect);
-	CGContextDrawLinearGradientBetweenPoints(ctx, CGPointMake(0, rect.size.height+5), colorA, CGPointMake(0, 5), colorB);
-	
-	CGContextRestoreGState(ctx);
-}
-
-TUIViewDrawRect TUITextViewSearchFrame(void)
-{
-	return [^(TUIView *view, CGRect rect) {
-		TUITextViewDrawRoundedFrame(view, floor(view.bounds.size.height / 2), NO);
-	} copy];
-}
-
-TUIViewDrawRect TUITextViewSearchFrameOverDark(void)
-{
-	return [^(TUIView *view, CGRect rect) {
-		TUITextViewDrawRoundedFrame(view, floor(view.bounds.size.height / 2), YES);
-	} copy];
-}
-
-TUIViewDrawRect TUITextViewStandardFrame(void)
-{
-	return [^(TUIView *view, CGRect rect) {
-		static const CGFloat outlineCornerRadius = 3.0f;
-		static const CGFloat innerShadowCornerRadius = 2.1f;
-		static const CGFloat contentAreaCornerRadius = 2.0f;
-		CGRect bounds = view.bounds;
-		
-		// bottom white highlight
-		NSRect hightlightFrame = NSMakeRect(0.0, 0.0, bounds.size.width, bounds.size.height-10.0);
-		[[NSColor colorWithDeviceWhite:1.0 alpha:0.5] set];
-		[[NSBezierPath bezierPathWithRoundedRect:hightlightFrame xRadius:outlineCornerRadius yRadius:outlineCornerRadius] fill];
-		
-		// black outline
-		NSRect blackOutlineFrame = NSMakeRect(0.0, 1.0, bounds.size.width, bounds.size.height-2.0);
-		NSGradient *gradient = nil;
-		if([NSApp isActive]) {
-			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.7 alpha:1.0]];
-		} else {
-			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.55 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.558 alpha:1.0]];
-		}
-		[gradient drawInBezierPath:[NSBezierPath bezierPathWithRoundedRect:blackOutlineFrame xRadius:outlineCornerRadius yRadius:outlineCornerRadius] angle:-90];
-		
-		// main white area
-		NSRect whiteFrame = NSMakeRect(1, 2, bounds.size.width-2.0, bounds.size.height-4.0);
-		[[NSColor whiteColor] set];
-		[[NSBezierPath bezierPathWithRoundedRect:whiteFrame xRadius:contentAreaCornerRadius yRadius:contentAreaCornerRadius] fill];
-		
-		// top inner shadow
-		NSRect shadowFrame = NSMakeRect(1, bounds.size.height-5, bounds.size.width-2.0, 3.0);
-		if(shadowFrame.size.width > 0.0f && shadowFrame.size.height > 0.0f) {
-			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:1.0 alpha:1.0]];
-			[gradient drawInBezierPath:[NSBezierPath bezierPathWithRoundedRect:shadowFrame xRadius:innerShadowCornerRadius yRadius:innerShadowCornerRadius] angle:-90];
-		}
-	} copy];
-}

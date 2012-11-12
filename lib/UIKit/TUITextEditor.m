@@ -17,6 +17,7 @@
 #import "TUITextEditor.h"
 #import "TUINSView.h"
 #import "TUINSWindow.h"
+#import "TUICGAdditions.h"
 #import "TUITextRenderer+Private.h"
 
 @implementation TUITextEditor
@@ -465,3 +466,89 @@
 }
 
 @end
+
+TUIViewDrawRect TUITextFrameRoundedRectStyle(CGFloat r, BOOL overDark) {
+	__block CGFloat radius = r;
+	return [^(TUIView *view, CGRect rect) {
+		rect = view.bounds;
+		if(radius < 0.0f)
+			radius = floor(view.bounds.size.height / 2);
+		
+		CGContextRef ctx = TUIGraphicsGetCurrentContext();
+		CGContextSaveGState(ctx);
+		
+		if(overDark) {
+			rect.size.height -= 1;
+			
+			CGContextSetRGBFillColor(ctx, 1, 1, 1, 0.4);
+			CGContextFillRoundRect(ctx, rect, radius);
+			
+			rect.origin.y += 1;
+			
+			CGContextSetRGBFillColor(ctx, 0, 0, 0, 0.65);
+			CGContextFillRoundRect(ctx, rect, radius);
+		} else {
+			rect.size.height -= 1;
+			
+			CGContextSetRGBFillColor(ctx, 1, 1, 1, 0.5);
+			CGContextFillRoundRect(ctx, rect, radius);
+			
+			rect.origin.y += 1;
+			
+			CGContextSetRGBFillColor(ctx, 0, 0, 0, 0.35);
+			CGContextFillRoundRect(ctx, rect, radius);
+		}
+		
+		rect = CGRectInset(rect, 1, 1);
+		CGContextClipToRoundRect(ctx, rect, radius);
+		CGFloat a = 0.9;
+		CGFloat b = 1.0;
+		CGFloat colorA[] = {a, a, a, 1.0};
+		CGFloat colorB[] = {b, b, b, 1.0};
+		CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);
+		CGContextFillRect(ctx, rect);
+		CGContextDrawLinearGradientBetweenPoints(ctx, CGPointMake(0, rect.size.height+5), colorA, CGPointMake(0, 5), colorB);
+		
+		CGContextRestoreGState(ctx);
+	} copy];
+}
+
+TUIViewDrawRect TUITextFrameSearchStyle(BOOL overDark) {
+	return TUITextFrameRoundedRectStyle(-1.0f, overDark);
+}
+
+TUIViewDrawRect TUITextFrameBezelStyle(void) {
+	return [^(TUIView *view, CGRect rect) {
+		static const CGFloat outlineCornerRadius = 3.0f;
+		static const CGFloat innerShadowCornerRadius = 2.1f;
+		static const CGFloat contentAreaCornerRadius = 2.0f;
+		CGRect bounds = view.bounds;
+		
+		// bottom white highlight
+		NSRect hightlightFrame = NSMakeRect(0.0, 0.0, bounds.size.width, bounds.size.height-10.0);
+		[[NSColor colorWithDeviceWhite:1.0 alpha:0.5] set];
+		[[NSBezierPath bezierPathWithRoundedRect:hightlightFrame xRadius:outlineCornerRadius yRadius:outlineCornerRadius] fill];
+		
+		// black outline
+		NSRect blackOutlineFrame = NSMakeRect(0.0, 1.0, bounds.size.width, bounds.size.height-2.0);
+		NSGradient *gradient = nil;
+		if([NSApp isActive]) {
+			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.7 alpha:1.0]];
+		} else {
+			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.55 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.558 alpha:1.0]];
+		}
+		[gradient drawInBezierPath:[NSBezierPath bezierPathWithRoundedRect:blackOutlineFrame xRadius:outlineCornerRadius yRadius:outlineCornerRadius] angle:-90];
+		
+		// main white area
+		NSRect whiteFrame = NSMakeRect(1, 2, bounds.size.width-2.0, bounds.size.height-4.0);
+		[[NSColor whiteColor] set];
+		[[NSBezierPath bezierPathWithRoundedRect:whiteFrame xRadius:contentAreaCornerRadius yRadius:contentAreaCornerRadius] fill];
+		
+		// top inner shadow
+		NSRect shadowFrame = NSMakeRect(1, bounds.size.height-5, bounds.size.width-2.0, 3.0);
+		if(shadowFrame.size.width > 0.0f && shadowFrame.size.height > 0.0f) {
+			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:1.0 alpha:1.0]];
+			[gradient drawInBezierPath:[NSBezierPath bezierPathWithRoundedRect:shadowFrame xRadius:innerShadowCornerRadius yRadius:innerShadowCornerRadius] angle:-90];
+		}
+	} copy];
+}

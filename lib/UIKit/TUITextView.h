@@ -99,8 +99,3 @@
 - (void)textViewDidResignFirstResponder:(TUITextView *)textView;
 
 @end
-
-
-extern TUIViewDrawRect TUITextViewSearchFrame(void);
-extern TUIViewDrawRect TUITextViewSearchFrameOverDark(void);
-extern TUIViewDrawRect TUITextViewStandardFrame(void);

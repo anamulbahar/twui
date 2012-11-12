@@ -31,14 +31,12 @@
  */
 
 #import "TUITextField.h"
-#import "TUITextView.h"
 #import "TUITextEditor.h"
 
-#import "TUICGAdditions.h"
 #import "TUINSView.h"
 #import "TUINSWindow.h"
 
-#import "TUIButton.h"
+#import "TUICGAdditions.h"
 #import "NSColor+TUIExtensions.h"
 
 #define TUITextCursorColor [NSColor colorWithCalibratedRed:0.05f green:0.55f blue:0.91f alpha:1.00f]
@@ -58,12 +56,12 @@ static CAAnimation* TUICursorThrobAnimation() {
 
 @interface TUITextField () <TUITextRendererDelegate> {
 	@package struct {
-		unsigned delegateTextFieldDidChange:1;
 		unsigned delegateDoCommandBySelector:1;
-		unsigned delegateWillBecomeFirstResponder:1;
-		unsigned delegateDidBecomeFirstResponder:1;
-		unsigned delegateWillResignFirstResponder:1;
-		unsigned delegateDidResignFirstResponder:1;
+		unsigned delegateTextFieldDidChange:1;
+		unsigned delegateWillBeginEditing:1;
+		unsigned delegateDidBeginEditing:1;
+		unsigned delegateWillEndEditing:1;
+		unsigned delegateDidEndEditing:1;
 		unsigned delegateTextFieldShouldReturn:1;
 		unsigned delegateTextFieldShouldClear:1;
 		unsigned delegateTextFieldShouldTabToNext:1;
@@ -105,7 +103,7 @@ static CAAnimation* TUICursorThrobAnimation() {
 		
 		self.font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
 		self.textColor = [NSColor textColor];
-		self.drawFrame = TUITextViewStandardFrame();
+		self.drawFrame = TUITextFrameBezelStyle();
 		
 		self.autocorrectedResults = [NSMutableDictionary dictionary];
 		self.textRenderers = @[self.editor];
@@ -168,13 +166,13 @@ static CAAnimation* TUICursorThrobAnimation() {
 	
 	_textFieldFlags.delegateTextFieldDidChange = [_delegate respondsToSelector:@selector(textFieldDidChange:)];
 	_textFieldFlags.delegateDoCommandBySelector = [_delegate respondsToSelector:@selector(textField:doCommandBySelector:)];
-	_textFieldFlags.delegateWillBecomeFirstResponder = [_delegate respondsToSelector:@selector(textFieldWillBecomeFirstResponder:)];
-	_textFieldFlags.delegateDidBecomeFirstResponder = [_delegate respondsToSelector:@selector(textFieldDidBecomeFirstResponder:)];
-	_textFieldFlags.delegateWillResignFirstResponder = [_delegate respondsToSelector:@selector(textFieldWillResignFirstResponder:)];
-	_textFieldFlags.delegateDidResignFirstResponder = [_delegate respondsToSelector:@selector(textFieldDidResignFirstResponder:)];
-	_textFieldFlags.delegateTextFieldShouldReturn = [d respondsToSelector:@selector(textFieldShouldReturn:)];
-	_textFieldFlags.delegateTextFieldShouldClear = [d respondsToSelector:@selector(textFieldShouldClear:)];
-	_textFieldFlags.delegateTextFieldShouldTabToNext = [d respondsToSelector:@selector(textFieldShouldTabToNext:)];
+	_textFieldFlags.delegateWillBeginEditing = [_delegate respondsToSelector:@selector(textFieldWillBeginEditing:)];
+	_textFieldFlags.delegateDidBeginEditing = [_delegate respondsToSelector:@selector(textFieldDidBeginEditing:)];
+	_textFieldFlags.delegateWillEndEditing = [_delegate respondsToSelector:@selector(textFieldWillEndEditing:)];
+	_textFieldFlags.delegateDidEndEditing = [_delegate respondsToSelector:@selector(textFieldDidEndEditing:)];
+	_textFieldFlags.delegateTextFieldShouldReturn = [_delegate respondsToSelector:@selector(textFieldShouldReturn:)];
+	_textFieldFlags.delegateTextFieldShouldClear = [_delegate respondsToSelector:@selector(textFieldShouldClear:)];
+	_textFieldFlags.delegateTextFieldShouldTabToNext = [_delegate respondsToSelector:@selector(textFieldShouldTabToNext:)];
 }
 
 // If the text renderer can handle an event for us, let it do so.
@@ -380,6 +378,19 @@ static CAAnimation* TUICursorThrobAnimation() {
 	// placeholder renderer or the actual text editor and draw it.
 	// Note that to allow editing, we set the editor's frame as well.
 	[(placeholderRequired ? self.placeholderRenderer : self.editor) draw];
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+	CGFloat insetWidth = CGRectGetWidth(TUIEdgeInsetsInsetRect(self.bounds, self.contentInset));
+	CGSize textSize = [self.editor sizeConstrainedToWidth:insetWidth];
+	
+	// If the string ends with a return, CTFrameGetLines doesn't consider that a new line.
+	if([self.text hasSuffix:@"\n"]) {
+		CGRect firstCharacterRect = [self.editor firstRectForCharacterRange:CFRangeMake(0, 0)];
+		textSize.height += firstCharacterRect.size.height;
+	}
+	
+	return CGSizeMake(CGRectGetWidth(self.bounds), textSize.height + self.contentInset.top + self.contentInset.bottom);
 }
 
 #pragma mark -
@@ -686,9 +697,7 @@ static CAAnimation* TUICursorThrobAnimation() {
 	if(_textFieldFlags.delegateTextFieldShouldClear) {
 		if([(id <TUITextFieldDelegate>)_delegate textFieldShouldClear:self])
 			self.text = @"";
-	} else {
-		self.text = @"";
-	}
+	} else self.text = @"";
 }
 
 - (void)_tabToNext {
@@ -721,61 +730,29 @@ static CAAnimation* TUICursorThrobAnimation() {
 }
 
 #pragma mark -
-#pragma mark Visual Editing Buttons
-
-- (void)setRightButton:(TUIButton *)button {
-	if(![_rightButton isEqual:button]) {
-		
-		[_rightButton removeFromSuperview];
-		_rightButton = button;
-		
-		_rightButton.layout = ^(TUIView *view) {
-			CGRect rect = view.superview.bounds;
-			
-			return TUIEdgeInsetsInsetRect((CGRect) {
-				.origin.x = rect.size.width - rect.size.height,
-				.size = CGSizeMake(rect.size.height, rect.size.height)
-			}, TUIEdgeInsetsMake(4.0f, 4.0f, 4.0f, 4.0f));
-		};
-		
-		[self addSubview:_rightButton];
-	}
-}
-
-- (CGSize)sizeThatFits:(CGSize)size {
-	CGFloat insetWidth = CGRectGetWidth(TUIEdgeInsetsInsetRect(self.bounds, self.contentInset));
-	CGSize textSize = [self.editor sizeConstrainedToWidth:insetWidth];
-	
-	// If the string ends with a return, CTFrameGetLines doesn't consider that a new line.
-	if([self.text hasSuffix:@"\n"]) {
-		CGRect firstCharacterRect = [self.editor firstRectForCharacterRange:CFRangeMake(0, 0)];
-		textSize.height += firstCharacterRect.size.height;
-	}
-	
-	return CGSizeMake(CGRectGetWidth(self.bounds), textSize.height + self.contentInset.top + self.contentInset.bottom);
-}
-
-#pragma mark -
 #pragma mark Text Renderer Delegate Forwarding
 
 - (void)textRendererWillBecomeFirstResponder:(TUITextRenderer *)textRenderer {
-	if(_textFieldFlags.delegateWillBecomeFirstResponder)
-	   [_delegate textFieldWillBecomeFirstResponder:self];
+	if(self.clearsOnBeginEditing)
+		[self clear:nil];
+	
+	if(_textFieldFlags.delegateWillBeginEditing)
+	   [_delegate textFieldWillBeginEditing:self];
 }
 
 - (void)textRendererDidBecomeFirstResponder:(TUITextRenderer *)textRenderer {
-	if(_textFieldFlags.delegateDidBecomeFirstResponder)
-		[_delegate textFieldDidBecomeFirstResponder:self];
+	if(_textFieldFlags.delegateDidBeginEditing)
+		[_delegate textFieldDidBeginEditing:self];
 }
 
 - (void)textRendererWillResignFirstResponder:(TUITextRenderer *)textRenderer {
-	if(_textFieldFlags.delegateWillResignFirstResponder)
-		[_delegate textFieldWillResignFirstResponder:self];
+	if(_textFieldFlags.delegateWillEndEditing)
+		[_delegate textFieldWillEndEditing:self];
 }
 
 - (void)textRendererDidResignFirstResponder:(TUITextRenderer *)textRenderer {
-	if(_textFieldFlags.delegateDidResignFirstResponder)
-		[_delegate textFieldDidResignFirstResponder:self];
+	if(_textFieldFlags.delegateDidEndEditing)
+		[_delegate textFieldDidEndEditing:self];
 }
 
 #pragma mark -
@@ -783,6 +760,9 @@ static CAAnimation* TUICursorThrobAnimation() {
 @end
 
 @implementation TUITextFieldEditor
+
+#pragma mark -
+#pragma mark Editor Modifications
 
 - (TUITextField *)_textField {
 	return (TUITextField *)view;
@@ -806,5 +786,7 @@ static CAAnimation* TUICursorThrobAnimation() {
 	self.selectedRange = NSMakeRange(self.text.length, 0);
 	return [super becomeFirstResponder];
 }
+
+#pragma mark -
 
 @end

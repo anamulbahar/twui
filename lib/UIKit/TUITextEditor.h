@@ -15,6 +15,7 @@
  */
 
 #import "TUITextRenderer.h"
+#import "TUIView.h"
 
 @interface TUITextEditor : TUITextRenderer <NSTextInputClient>
 {
@@ -58,3 +59,7 @@
 - (void)deleteCharactersInRange:(NSRange)range;
 
 @end
+
+extern TUIViewDrawRect TUITextFrameRoundedRectStyle(CGFloat radius, BOOL overDark);
+extern TUIViewDrawRect TUITextFrameSearchStyle(BOOL overDark);
+extern TUIViewDrawRect TUITextFrameBezelStyle(void);
