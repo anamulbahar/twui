@@ -326,9 +326,8 @@ static CAAnimation* TUICursorThrobAnimation() {
 	CGRect cursorRect = [self _cursorRect];
 	
 	// Single-line text views scroll horizontally with the cursor.
-	// Note: Currently not working-- NEEDS FIX.
-	NSRange selection = self.editor.selectedRange;
 	if(CGRectGetMaxX(cursorRect) > CGRectGetWidth(textRect)) {
+		NSRange selection = self.editor.selectedRange;
 		CGRect characterRect = CGRectIntegral([self.editor firstRectForCharacterRange:ABCFRangeFromNSRange(selection)]);
 		CGFloat offset = CGRectGetMaxX(characterRect) - CGRectGetWidth(textRect);
 		
@@ -378,6 +377,22 @@ static CAAnimation* TUICursorThrobAnimation() {
 	}
 	
 	return CGSizeMake(CGRectGetWidth(self.bounds), textSize.height + self.contentInset.top + self.contentInset.bottom);
+}
+
+- (void)scrollWheel:(NSEvent *)event {
+	NSRange selection = self.editor.selectedRange;
+	if(selection.length != 0)
+		return;
+	
+	NSInteger scrollAmount = (NSInteger)floorf(event.deltaX);
+	NSInteger scrolledLocation = (NSInteger)selection.location + scrollAmount;
+	
+	if(scrolledLocation < 0)
+		scrolledLocation = 0;
+	else if(scrolledLocation > self.editor.backingStore.length)
+		scrolledLocation = self.editor.backingStore.length;
+	
+	self.editor.selectedRange = NSMakeRange((NSUInteger)scrolledLocation, 0);
 }
 
 #pragma mark -
