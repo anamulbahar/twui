@@ -21,22 +21,26 @@
 // subpixel AA and a flatter view heirarchy.
 @interface TUILabel : TUIView
 
-@property (nonatomic, copy) NSString *text;
+// Once you set a textStorage, you enter an explicit text storage mode,
+// in which the designated custom properties do not do anything, until
+// you exit the explicit storage mode, by setting textStorage to nil.
 @property (nonatomic, strong) TUITextStorage *textStorage;
 @property (nonatomic, readonly) TUITextRenderer *renderer;
 
+// The properties below are only accessible in implicit textStorage mode.
+@property (nonatomic, copy) NSString *text;
 @property (nonatomic, strong) NSFont *font;
 @property (nonatomic, strong) NSColor *textColor;
+@property (nonatomic, strong) NSColor *highlightedTextColor;
+@property (nonatomic, assign) NSUInteger numberOfLines;
 @property (nonatomic, assign) TUITextAlignment textAlignment;
 @property (nonatomic, assign) TUILineBreakMode lineBreakMode;
-@property (nonatomic, assign) NSUInteger numberOfLines;
-
-// The following properties only work if an explicit textStorage is not set.
 @property (nonatomic, assign, getter = isHighlighted) BOOL highlighted;
-@property (nonatomic, assign, getter = isEnabled) BOOL enabled;
-@property (nonatomic, strong) NSColor *highlightedTextColor;
 
-// Defaults to emboss with no blur.
+// Setting a label disabled slightly dims it and the text becomes unselectable.
+@property (nonatomic, assign, getter = isEnabled) BOOL enabled;
+
+// Defaults to 1px vertical offset with no blur.
 @property (nonatomic, strong) NSColor *shadowColor;
 @property (nonatomic, assign) CGSize shadowOffset;
 

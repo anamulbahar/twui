@@ -18,6 +18,14 @@
 #import "TUICGAdditions.h"
 #import "TUITextRenderer.h"
 
+@interface TUILabel () {
+	struct {
+		unsigned useExplicitTextStorage:1;
+	} _labelFlags;
+}
+
+@end
+
 @implementation TUILabel
 
 - (id)initWithFrame:(CGRect)frame {
@@ -39,6 +47,7 @@
 		self.userInteractionEnabled = NO;
 		self.textRenderers = @[self.renderer];
 	}
+	
 	return self;
 }
 
@@ -46,16 +55,15 @@
 	if(!self.enabled)
 		return nil;
 	
-	NSMenu *m = [[NSMenu alloc] initWithTitle:@""]; {
-		NSMenuItem *i = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", nil)
-												   action:@selector(copyText:) keyEquivalent:@""];
-		[i setKeyEquivalent:@"c"];
-		[i setKeyEquivalentModifierMask:NSCommandKeyMask];
-		[i setTarget:self];
-		[m addItem:i];
-	}
+	NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
+	NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", nil)
+												  action:@selector(copyText:) keyEquivalent:@""];
+	[item setKeyEquivalent:@"c"];
+	[item setKeyEquivalentModifierMask:NSCommandKeyMask];
+	[item setTarget:self];
+	[menu addItem:item];
 	
-	return m;
+	return menu;
 }
 
 - (void)copyText:(id)sender {
@@ -68,10 +76,9 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	if(!self.renderer.textStorage)
-		[self _recreateAttributedString];
+	[self _propogateTextStorage];
 	
-	CGContextSetAlpha(TUIGraphicsGetCurrentContext(), self.enabled ? 1.0 : 0.7);
+	CGContextSetAlpha(TUIGraphicsGetCurrentContext(), self.enabled ? 1.0f : 0.7f);
 	self.renderer.frame = (CGRect) {
 		.size = [self.renderer sizeConstrainedToWidth:self.bounds.size.width numberOfLines:self.numberOfLines]
 	};
@@ -80,76 +87,88 @@
 }
 
 - (TUITextStorage *)textStorage {
-	if(!self.renderer.textStorage)
-		[self _recreateAttributedString];
+	if(_labelFlags.useExplicitTextStorage && !self.renderer.textStorage)
+		[self _propogateTextStorage];
 	
 	return self.renderer.textStorage;
 }
 
 - (void)setTextStorage:(TUITextStorage *)textStorage {
+	_labelFlags.useExplicitTextStorage = (textStorage == nil);
+	if(!textStorage)
+		return;
+	
 	self.renderer.textStorage = textStorage;
 	[self setNeedsDisplay];
 }
 
-- (void)_recreateAttributedString {
-	if(!self.text)
-		return;
-	
+- (TUITextStorage *)_propogatedTextStorage {
 	TUITextStorage *storage = [TUITextStorage storageWithString:self.text];
 	
 	if(self.font)
 		storage.font = self.font;
 	if(self.textColor && !self.highlighted)
 		storage.color = self.textColor;
-	else if(self.highlightedTextColor && self.highlighted)
+	else if(self.highlightedTextColor && (self.highlighted && self.highlightedTextColor))
 		storage.color = self.highlightedTextColor;
 	
 	[storage setAlignment:self.textAlignment lineBreakMode:self.lineBreakMode];
-	self.textStorage = storage;
+	
+	return storage;
+}
+
+- (void)_propogateTextStorage {
+	if(!self.renderer.textStorage)
+		self.renderer.textStorage = [self _propogatedTextStorage];
 }
 
 - (void)setText:(NSString *)text {
-	if([text isEqualToString:_text])
+	if([text isEqualToString:_text] || !_labelFlags.useExplicitTextStorage)
 		return;
 	
 	_text = [text copy];
-	self.textStorage = nil;
+	
+	[self _propogateTextStorage];
 	[self setNeedsDisplay];
 }
 
 - (void)setFont:(NSFont *)font {
-	if([font isEqual:_font])
+	if([font isEqual:_font] || !_labelFlags.useExplicitTextStorage)
 		return;
 	
 	_font = font;
-	self.textStorage = nil;
+	
+	[self _propogateTextStorage];
 	[self setNeedsDisplay];
 }
 
 - (void)setTextColor:(NSColor *)textColor {
-	if([textColor isEqual:_textColor])
+	if([textColor isEqual:_textColor] || !_labelFlags.useExplicitTextStorage)
 		return;
 	
 	_textColor = textColor;
-	self.textStorage = nil;
+	
+	[self _propogateTextStorage];
 	[self setNeedsDisplay];
 }
 
 - (void)setAlignment:(TUITextAlignment)alignment {
-	if(alignment == _textAlignment)
+	if(alignment == _textAlignment || !_labelFlags.useExplicitTextStorage)
 		return;
 	
 	_textAlignment = alignment;
-	self.textStorage = nil;
+	
+	[self _propogateTextStorage];
 	[self setNeedsDisplay];
 }
 
 - (void)setLineBreakMode:(TUILineBreakMode)lineBreakMode {
-	if (lineBreakMode == _lineBreakMode)
+	if (lineBreakMode == _lineBreakMode || !_labelFlags.useExplicitTextStorage)
 		return;
 	
 	_lineBreakMode = lineBreakMode;
-	self.textStorage = nil;
+	
+	[self _propogateTextStorage];
 	[self setNeedsDisplay];
 }
 
