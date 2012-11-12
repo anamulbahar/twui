@@ -40,9 +40,29 @@ typedef enum {
 } TUITextAlignment;
 
 typedef enum {
-	TUIBackgroundFillStyleInline = 0,
+	TUITextVerticalAlignmentTop,
+	TUITextVerticalAlignmentMiddle,
+	TUITextVerticalAlignmentBottom,
+} TUITextVerticalAlignment;
+
+typedef enum {
+	TUIBackgroundFillStyleInline,
 	TUIBackgroundFillStyleBlock,
 } TUIBackgroundFillStyle;
+
+typedef enum {
+	TUITextSelectionAffinityCharacter = 0,
+	TUITextSelectionAffinityWord = 1,
+	TUITextSelectionAffinityLine = 2,
+	TUITextSelectionAffinityParagraph = 3,
+} TUITextSelectionAffinity;
+
+@interface TUITextStorageAutocorrectedPair : NSObject <NSCopying>
+
+@property (nonatomic, strong) NSTextCheckingResult *correctionResult;
+@property (nonatomic, copy) NSString *originalString;
+
+@end
 
 @interface TUITextStorage : NSMutableAttributedString
 

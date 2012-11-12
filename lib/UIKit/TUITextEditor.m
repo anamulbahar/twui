@@ -222,7 +222,9 @@
 	[self _scrollToIndex:MAX(_selectionStart, _selectionEnd)];
 }
 
-
+- (BOOL)shouldBeTreatedAsInkEvent:(NSEvent *)theEvent {
+	return self.editable;
+}
 
 
 //http://developer.apple.com/library/mac/#samplecode/TextInputView/Listings/FadingTextView_m.html%23//apple_ref/doc/uid/DTS40008840-FadingTextView_m-DontLinkElementID_6

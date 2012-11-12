@@ -33,52 +33,12 @@
 #import "TUIControl.h"
 #import "TUIGeometry.h"
 #import "TUITextStorage.h"
+#import "TUITextEditor.h"
 
-@class TUITextEditor;
 @class TUIButton;
-@class NSFont;
-
 @protocol TUITextFieldDelegate;
 
-@interface TUITextField : TUIControl {
-	id<TUITextFieldDelegate> __unsafe_unretained delegate;
-	TUIViewDrawRect drawFrame;
-	
-	NSString *placeholder;
-	TUITextRenderer *placeholderRenderer;
-	
-	NSFont *font;
-	NSColor *textColor;
-	TUITextAlignment textAlignment;
-	BOOL editable;
-	
-	BOOL spellCheckingEnabled;
-	NSInteger lastCheckToken;
-	NSArray *lastCheckResults;
-	NSTextCheckingResult *selectedTextCheckingResult;
-	BOOL autocorrectionEnabled;
-	NSMutableDictionary *autocorrectedResults;
-	
-	TUIEdgeInsets contentInset;
-	
-	TUITextEditor *renderer;
-	TUIView *cursor;
-	
-	CGRect _lastTextRect;
-	
-	@package
-	struct {
-		unsigned int delegateTextFieldDidChange:1;
-		unsigned int delegateDoCommandBySelector:1;
-		unsigned int delegateWillBecomeFirstResponder:1;
-		unsigned int delegateDidBecomeFirstResponder:1;
-		unsigned int delegateWillResignFirstResponder:1;
-		unsigned int delegateDidResignFirstResponder:1;
-		unsigned int delegateTextFieldShouldReturn:1;
-		unsigned int delegateTextFieldShouldClear:1;
-		unsigned int delegateTextFieldShouldTabToNext:1;
-	} _textFieldFlags;
-}
+@interface TUITextField : TUIControl
 
 @property (nonatomic, unsafe_unretained) id<TUITextFieldDelegate> delegate;
 
@@ -91,20 +51,18 @@
 @property (nonatomic, assign) TUITextAlignment textAlignment;
 @property (nonatomic, assign) TUIEdgeInsets contentInset;
 
+@property (nonatomic, strong, readonly) TUITextRenderer *renderer;
+@property (nonatomic, strong, readonly) TUITextRenderer *placeholderRenderer;
+
 @property (nonatomic, assign) NSRange selectedRange;
 @property (nonatomic, assign, getter=isEditable) BOOL editable;
 @property (nonatomic, assign, getter=isSpellCheckingEnabled) BOOL spellCheckingEnabled;
 @property (nonatomic, assign, getter=isAutocorrectionEnabled) BOOL autocorrectionEnabled;
 
+@property (nonatomic, strong) TUIButton *rightButton;
 @property (nonatomic, copy) TUIViewDrawRect drawFrame;
 
-- (BOOL)hasText;
-
 - (BOOL)doCommandBySelector:(SEL)selector;
-
-@property (nonatomic, strong) TUIButton *rightButton;
-
-- (TUIButton *)clearButton;
 
 @end
 
@@ -113,7 +71,9 @@
 @optional
 
 - (void)textFieldDidChange:(TUITextField *)textField;
-- (BOOL)textField:(TUITextField *)textField doCommandBySelector:(SEL)commandSelector; // return YES if the implementation consumes the selector, NO if it should be passed up to super
+
+// return YES if the implementation consumes the selector, NO if it should be passed up to super.
+- (BOOL)textField:(TUITextField *)textField doCommandBySelector:(SEL)commandSelector;
 
 - (void)textFieldWillBecomeFirstResponder:(TUITextField *)textField;
 - (void)textFieldDidBecomeFirstResponder:(TUITextField *)textField;

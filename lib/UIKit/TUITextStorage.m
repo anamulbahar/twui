@@ -225,6 +225,28 @@ NSString *const TUITextStoragePreDrawBlockName = @"TUITextStoragePreDrawBlockNam
 @end
 #pragma clang diagnostic pop
 
+@implementation TUITextStorageAutocorrectedPair
+
+- (BOOL)isEqual:(id)object {
+	if(![object isKindOfClass:[TUITextStorageAutocorrectedPair class]]) return NO;
+	
+	TUITextStorageAutocorrectedPair *otherPair = object;
+	return [self.originalString isEqualToString:otherPair.originalString] && NSEqualRanges(self.correctionResult.range, otherPair.correctionResult.range);
+}
+
+- (NSUInteger)hash {
+	return [self.originalString hash] ^ self.correctionResult.range.location ^ self.correctionResult.range.length;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+	TUITextStorageAutocorrectedPair *copiedPair = [[[self class] alloc] init];
+	copiedPair.correctionResult = self.correctionResult;
+	copiedPair.originalString = self.originalString;
+	return copiedPair;
+}
+
+@end
+
 NSParagraphStyle *NSSParagraphStyleForTUITextAlignment(TUITextAlignment alignment) {
 	NSTextAlignment a = NSLeftTextAlignment;
 	switch (alignment) {

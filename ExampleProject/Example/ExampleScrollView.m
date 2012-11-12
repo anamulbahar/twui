@@ -30,7 +30,17 @@
 		self.textField.cursorColor = [NSColor darkGrayColor];
 		self.textField.font = [NSFont systemFontOfSize:12.0f];
 		self.textField.contentInset = TUIEdgeInsetsMake(2, 2, 2, 2);
+		self.textField.autocorrectionEnabled = YES;
+		self.textField.spellCheckingEnabled = YES;
 		self.textField.placeholder = @"textField";
+		self.textField.renderer.verticalAlignment = TUITextVerticalAlignmentMiddle;
+		self.textField.renderer.shadowColor = [NSColor whiteColor];
+		self.textField.renderer.shadowOffset = CGSizeMake(0, 1);
+		self.textField.renderer.shadowBlur = 1.0f;
+		self.textField.placeholderRenderer.verticalAlignment = TUITextVerticalAlignmentMiddle;
+		self.textField.placeholderRenderer.shadowColor = [NSColor whiteColor];
+		self.textField.placeholderRenderer.shadowOffset = CGSizeMake(0, 1);
+		self.textField.placeholderRenderer.shadowBlur = 1.0f;
 		[self addSubview:self.textField];
 		
 		//_scrollView = [[TUIScrollView alloc] initWithFrame:self.bounds];

@@ -18,28 +18,11 @@
 #import "TUITextStorage.h"
 #import "CoreText+Additions.h"
 
-@class NSFont;
-@class TUIView;
-@protocol ABActiveTextRange;
-
 extern NSString *const TUITextRendererDidBecomeFirstResponder;
 extern NSString *const TUITextRendererDidResignFirstResponder;
 
-typedef enum {
-	TUITextSelectionAffinityCharacter = 0,
-	TUITextSelectionAffinityWord = 1,
-	TUITextSelectionAffinityLine = 2,
-	TUITextSelectionAffinityParagraph = 3,
-} TUITextSelectionAffinity;
-
-typedef enum {
-	TUITextVerticalAlignmentTop = 0,
-	// Note that TUITextVerticalAlignmentMiddle and TUITextVerticalAlignmentBottom both have a performance hit because they have to create the CTFrame twice: once to find its height and then again to shift it to match the alignment and height.
-	// Also note that text selection doesn't work properly with anything but TUITextVerticalAlignmentTop.
-	TUITextVerticalAlignmentMiddle,
-	TUITextVerticalAlignmentBottom,
-} TUITextVerticalAlignment;
-
+@class TUIView;
+@protocol ABActiveTextRange;
 @protocol TUITextRendererDelegate;
 
 @interface TUITextRenderer : TUIResponder {
@@ -87,6 +70,8 @@ typedef enum {
 @property (nonatomic, strong) NSColor *shadowColor; // default = nil for no shadow
 @property (nonatomic, strong) NSColor *selectionColor;
 
+// Note that TUITextVerticalAlignmentMiddle and TUITextVerticalAlignmentBottom both have a performance hit because they have to create the CTFrame twice: once to find its height and then again to shift it to match the alignment and height.
+// Also note that text selection doesn't work properly with anything but TUITextVerticalAlignmentTop.
 @property (nonatomic, assign) TUITextVerticalAlignment verticalAlignment;
 
 // These are advanced features that carry with them a potential performance hit.
