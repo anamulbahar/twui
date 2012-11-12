@@ -17,85 +17,60 @@
 #import "TUIControl.h"
 #import "TUIGeometry.h"
 #import "TUITextStorage.h"
-
-@class TUITextEditor;
-@class NSFont;
+#import "TUITextEditor.h"
 
 @protocol TUITextViewDelegate;
 
-@interface TUITextView : TUIControl {
-	id<TUITextViewDelegate> __unsafe_unretained delegate;
-	TUIViewDrawRect drawFrame;
-	
-	NSString *placeholder;
-	TUITextRenderer *placeholderRenderer;
-	
-	NSFont *font;
-	NSColor *textColor;
-	TUITextAlignment textAlignment;
-	BOOL editable;
-	
-	BOOL spellCheckingEnabled;
-	NSInteger lastCheckToken;
-	NSArray *lastCheckResults;
-	NSTextCheckingResult *selectedTextCheckingResult;
-	BOOL autocorrectionEnabled;
-	NSMutableDictionary *autocorrectedResults;
+@interface TUITextView : TUIControl
 
-	TUIEdgeInsets contentInset;
-
-	TUITextEditor *renderer;
-	TUIView *cursor;
-	
-	CGRect _lastTextRect;
-	
-	struct {
-		unsigned int delegateTextViewDidChange:1;
-		unsigned int delegateDoCommandBySelector:1;
-		unsigned int delegateWillBecomeFirstResponder:1;
-		unsigned int delegateDidBecomeFirstResponder:1;
-		unsigned int delegateWillResignFirstResponder:1;
-		unsigned int delegateDidResignFirstResponder:1;
-	} _textViewFlags;
-}
-
-- (Class)textEditorClass;
-
-@property (nonatomic, unsafe_unretained) id<TUITextViewDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id <TUITextViewDelegate> delegate;
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *placeholder;
+
+@property (nonatomic, strong, readonly) TUITextRenderer *renderer;
+@property (nonatomic, strong, readonly) TUITextRenderer *placeholderRenderer;
+
 @property (nonatomic, strong) NSFont *font;
 @property (nonatomic, strong) NSColor *textColor;
+@property (nonatomic, assign) TUITextAlignment textAlignment;
+
+@property (nonatomic, assign) BOOL clearsOnBeginEditing;
+
+// Dysfunctional.
+@property (nonatomic, assign) BOOL adjustsFontSizeToFitWidth;
+@property (nonatomic, assign) CGFloat minimumFontSize;
+
 @property (nonatomic, strong) NSColor *cursorColor;
 @property (nonatomic, assign) CGFloat cursorWidth;
-@property (nonatomic, assign) TUITextAlignment textAlignment;
 @property (nonatomic, assign) TUIEdgeInsets contentInset;
 
 @property (nonatomic, assign) NSRange selectedRange;
-@property (nonatomic, assign, getter=isEditable) BOOL editable;
-@property (nonatomic, assign, getter=isSpellCheckingEnabled) BOOL spellCheckingEnabled;
-@property (nonatomic, assign, getter=isAutocorrectionEnabled) BOOL autocorrectionEnabled;
+@property (nonatomic, assign, getter = isEditable) BOOL editable;
+@property (nonatomic, assign, getter = isSpellCheckingEnabled) BOOL spellCheckingEnabled;
+@property (nonatomic, assign, getter = isAutocorrectionEnabled) BOOL autocorrectionEnabled;
 
 @property (nonatomic, copy) TUIViewDrawRect drawFrame;
-
-- (BOOL)hasText;
 
 - (BOOL)doCommandBySelector:(SEL)selector;
 
 @end
 
-
 @protocol TUITextViewDelegate <NSObject>
 
 @optional
 
+// return YES if the implementation consumes the selector, NO if it should be passed up to super.
+- (BOOL)textView:(TUITextView *)textView doCommandBySelector:(SEL)commandSelector;
 - (void)textViewDidChange:(TUITextView *)textView;
-- (BOOL)textView:(TUITextView *)textView doCommandBySelector:(SEL)commandSelector; // return YES if the implementation consumes the selector, NO if it should be passed up to super
 
-- (void)textViewWillBecomeFirstResponder:(TUITextView *)textView;
-- (void)textViewDidBecomeFirstResponder:(TUITextView *)textView;
-- (void)textViewWillResignFirstResponder:(TUITextView *)textView;
-- (void)textViewDidResignFirstResponder:(TUITextView *)textView;
+- (void)textViewWillBeginEditing:(TUITextView *)textView;
+- (void)textViewDidBeginEditing:(TUITextView *)textView;
+- (void)textViewWillEndEditing:(TUITextView *)textView;
+- (void)textViewDidEndEditing:(TUITextView *)textView;
+
+- (BOOL)textViewShouldReturn:(TUITextView *)textView;
+- (BOOL)textViewShouldClear:(TUITextView *)textView;
+- (BOOL)textViewShouldTabToNext:(TUITextView *)textView;
 
 @end

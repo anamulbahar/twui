@@ -23,5 +23,6 @@
 }
 
 @property (nonatomic, strong) TUITextField *textField;
+@property (nonatomic, strong) TUITextView *textView;
 
 @end
