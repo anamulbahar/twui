@@ -70,7 +70,7 @@ static NSAttributedString *killBuffer = nil;
 
 @implementation TUITextRenderer (KeyBindings)
 
-#define TEXT self.attributedString.string
+#define TEXT self.textStorage.string
 
 - (TUITextEditor *)_textEditor
 {

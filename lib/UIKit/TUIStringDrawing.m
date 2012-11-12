@@ -37,7 +37,7 @@
 - (CGSize)ab_sizeConstrainedToSize:(CGSize)size
 {
 	TUITextRenderer *t = [self ab_sharedTextRenderer];
-	t.attributedString = (TUITextStorage *)self;
+	t.textStorage = (TUITextStorage *)self;
 	t.frame = CGRectMake(0, 0, size.width, size.height);
 	return [t size];
 }
@@ -50,7 +50,7 @@
 - (CGSize)ab_drawInRect:(CGRect)rect context:(CGContextRef)ctx
 {
 	TUITextRenderer *t = [self ab_sharedTextRenderer];
-	t.attributedString = (TUITextStorage *)self;
+	t.textStorage = (TUITextStorage *)self;
 	t.frame = rect;
 	[t drawInContext:ctx];
 	return [t size];
@@ -65,8 +65,6 @@
 
 @implementation NSString (TUIStringDrawing)
 
-#if TARGET_OS_MAC
-
 - (CGSize)ab_sizeWithFont:(NSFont *)font
 {
 	TUITextStorage *s = [TUITextStorage storageWithString:self];
@@ -80,13 +78,6 @@
 	s.font = font;
 	return [s ab_sizeConstrainedToSize:size];
 }
-
-//- (CGSize)drawInRect:(CGRect)rect withFont:(NSFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment
-//{
-//	return [self ab_drawInRect:rect withFont:font lineBreakMode:lineBreakMode alignment:alignment];
-//}
-
-#endif
 
 - (CGSize)ab_drawInRect:(CGRect)rect color:(NSColor *)color font:(NSFont *)font
 {

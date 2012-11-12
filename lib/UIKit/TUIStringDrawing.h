@@ -35,11 +35,6 @@
 - (CGSize)ab_sizeWithFont:(NSFont *)font;
 - (CGSize)ab_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size;
 
-#if TARGET_OS_MAC
-// for ABRowView
-//- (CGSize)drawInRect:(CGRect)rect withFont:(NSFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment;
-#endif
-
 - (CGSize)ab_drawInRect:(CGRect)rect color:(NSColor *)color font:(NSFont *)font;
 - (CGSize)ab_drawInRect:(CGRect)rect withFont:(NSFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment;
 

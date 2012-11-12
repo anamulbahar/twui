@@ -67,11 +67,11 @@
     } else if([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
 		return [NSArray array];
 	} else if([attribute isEqualToString:NSAccessibilityDescriptionAttribute]) {
-		return [self.attributedString string];
+		return [self.textStorage string];
 	} else if([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-		return [self.attributedString string];
+		return [self.textStorage string];
 	} else if([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
-		return [self.attributedString string];
+		return [self.textStorage string];
 	} else if([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
 		return [NSNumber numberWithBool:YES];
 	}else {

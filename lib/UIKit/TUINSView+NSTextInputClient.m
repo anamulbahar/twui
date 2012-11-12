@@ -54,9 +54,9 @@
 //	NSLog(@"%@ %@ %@", NSStringFromSelector(_cmd), NSStringFromRange(aRange), NSStringFromRange(*actualRange));
 	
 	if(_tempTextRendererForTextInputClient) {
-		NSRange r = NSIntersectionRange(aRange, NSMakeRange(0, [_tempTextRendererForTextInputClient.attributedString length]));
+		NSRange r = NSIntersectionRange(aRange, NSMakeRange(0, [_tempTextRendererForTextInputClient.textStorage length]));
 		*actualRange = r;
-		NSAttributedString *s = [_tempTextRendererForTextInputClient.attributedString attributedSubstringFromRange:r];
+		NSAttributedString *s = [_tempTextRendererForTextInputClient.textStorage attributedSubstringFromRange:r];
 //		NSLog(@"know which text renderer I'm dealing with, returning - %@", s);
 		return s;
 	} else {
@@ -91,7 +91,7 @@
 	NSRect ret = NSZeroRect;
 	
 	if(_tempTextRendererForTextInputClient) {
-		NSRange r = NSIntersectionRange(aRange, NSMakeRange(0, [_tempTextRendererForTextInputClient.attributedString length]));
+		NSRange r = NSIntersectionRange(aRange, NSMakeRange(0, [_tempTextRendererForTextInputClient.textStorage length]));
 		*actualRange = r;
 //		NSLog(@"getting first rect for range: %@", NSStringFromRange(r));
 		CGRect f = [_tempTextRendererForTextInputClient firstRectForCharacterRange:CFRangeMake(r.location, r.length)];

@@ -36,7 +36,7 @@
 		inputContext.acceptsGlyphInfo = YES;
 		
 		_secure = NO;
-		self.attributedString = (TUITextStorage *)backingStore;
+		self.textStorage = (TUITextStorage *)backingStore;
 	}
 	return self;
 }

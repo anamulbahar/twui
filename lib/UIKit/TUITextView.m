@@ -268,7 +268,7 @@ static CAAnimation* TUICursorThrobAnimation() {
 	if(fakeMetrics) {
 		TUITextStorage *fake = [TUITextStorage storageWithString:@"M"];
 		fake.font = self.font;
-		self.editor.attributedString = fake;
+		self.editor.textStorage = fake;
 		selection = NSMakeRange(0, 0);
 	}
 	
@@ -295,7 +295,7 @@ static CAAnimation* TUICursorThrobAnimation() {
 	
 	// If we used fake metrics, restore the original ones.
 	if(fakeMetrics)
-		self.editor.attributedString = (TUITextStorage *)self.editor.backingStore;
+		self.editor.textStorage = (TUITextStorage *)self.editor.backingStore;
 	
 	return cursorRect;
 }
@@ -331,13 +331,13 @@ static CAAnimation* TUICursorThrobAnimation() {
 	
 	// If the user has not entered any text, and we have a placeholder string,
 	// configure a quick text storage for the placeholder.
-	BOOL placeholderRequired = (self.editor.attributedString.length < 1 && self.placeholder.length > 0);
+	BOOL placeholderRequired = (self.editor.textStorage.length < 1 && self.placeholder.length > 0);
 	if(placeholderRequired) {
 		TUITextStorage *storage = [TUITextStorage storageWithString:self.placeholder];
 		storage.font = self.font;
 		storage.color = [self.textColor colorWithAlphaComponent:0.5f];
 		
-		self.placeholderRenderer.attributedString = storage;
+		self.placeholderRenderer.textStorage = storage;
 		self.placeholderRenderer.frame = self.editor.frame;
 	}
 	

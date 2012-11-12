@@ -68,7 +68,7 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	if(!self.renderer.attributedString)
+	if(!self.renderer.textStorage)
 		[self _recreateAttributedString];
 	
 	CGContextSetAlpha(TUIGraphicsGetCurrentContext(), self.enabled ? 1.0 : 0.7);
@@ -79,33 +79,33 @@
 	[self.renderer draw];
 }
 
-- (TUITextStorage *)attributedString {
-	if(!self.renderer.attributedString)
+- (TUITextStorage *)textStorage {
+	if(!self.renderer.textStorage)
 		[self _recreateAttributedString];
 	
-	return self.renderer.attributedString;
+	return self.renderer.textStorage;
 }
 
-- (void)setAttributedString:(TUITextStorage *)a {
-	self.renderer.attributedString = a;
+- (void)setTextStorage:(TUITextStorage *)textStorage {
+	self.renderer.textStorage = textStorage;
 	[self setNeedsDisplay];
 }
 
 - (void)_recreateAttributedString {
-	if(!_text)
+	if(!self.text)
 		return;
 	
-	TUITextStorage *newAttributedString = [TUITextStorage storageWithString:_text];
+	TUITextStorage *storage = [TUITextStorage storageWithString:self.text];
 	
 	if(self.font)
-		newAttributedString.font = self.font;
+		storage.font = self.font;
 	if(self.textColor && !self.highlighted)
-		newAttributedString.color = self.textColor;
+		storage.color = self.textColor;
 	else if(self.highlightedTextColor && self.highlighted)
-		newAttributedString.color = self.highlightedTextColor;
+		storage.color = self.highlightedTextColor;
 	
-	[newAttributedString setAlignment:self.textAlignment lineBreakMode:self.lineBreakMode];
-	self.textStorage = newAttributedString;
+	[storage setAlignment:self.textAlignment lineBreakMode:self.lineBreakMode];
+	self.textStorage = storage;
 }
 
 - (void)setText:(NSString *)text {

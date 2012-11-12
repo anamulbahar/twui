@@ -23,13 +23,13 @@ extern NSString *const TUITextStoragePreDrawBlockName;
 typedef void (^TUITextStoragePreDrawBlock)(NSAttributedString *attributedString, NSRange substringRange,
 										   CGRect rects[], CFIndex rectCount);
 
-typedef enum {		
-	TUILineBreakModeWordWrap,
-	TUILineBreakModeCharacterWrap,
-	TUILineBreakModeClip,
+typedef enum {
 	TUILineBreakModeHeadTruncation,
 	TUILineBreakModeTailTruncation,
 	TUILineBreakModeMiddleTruncation,
+	TUILineBreakModeWordWrap,
+	TUILineBreakModeCharacterWrap,
+	TUILineBreakModeClip,
 } TUILineBreakMode;
 
 typedef enum {
@@ -78,7 +78,9 @@ typedef enum {
 @property (nonatomic, copy) TUITextStoragePreDrawBlock preDrawBlock;
 @property (nonatomic, assign) TUIBackgroundFillStyle backgroundFillStyle;
 
-// Setting this will set lineBreakMode to word wrap, use setAlignment:lineBreakMode: for more control
+// Use -[TUITextStorage setAlignment:lineBreakMode:] for more control.
+// Setting this will set lineBreakMode to TUILineBreakModeClip.
+// Setting lineBreakMode will set alignment to TUITextAlignmentLeft.
 @property (nonatomic, assign) TUITextAlignment alignment;
 @property (nonatomic, assign) TUITextAlignment lineBreakMode;
 

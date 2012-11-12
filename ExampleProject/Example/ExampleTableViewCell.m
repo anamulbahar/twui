@@ -68,11 +68,11 @@
 
 // Create a simple attributed string setter/getter to the text renderer.
 - (NSAttributedString *)attributedString {
-	return _textRenderer.attributedString;
+	return _textRenderer.textStorage;
 }
 
 - (void)setAttributedString:(NSAttributedString *)attributedString {
-	_textRenderer.attributedString = (TUITextStorage *)attributedString;
+	_textRenderer.textStorage = (TUITextStorage *)attributedString;
 	[self setNeedsDisplay];
 }
 

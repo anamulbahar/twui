@@ -149,7 +149,7 @@
 	TUITextStorage *title = [TUITextStorage storageWithString:[NSString stringWithFormat:@"Example Section %d", (int)section]];
 	title.color = [NSColor blackColor];
 	title.font = exampleFont2;
-	view.labelRenderer.attributedString = title;
+	view.labelRenderer.textStorage = title;
 	
 	// Dragging a title can drag the window too.
 	[view setMoveWindowByDragging:YES];

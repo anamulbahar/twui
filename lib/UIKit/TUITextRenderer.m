@@ -31,7 +31,6 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 
 @implementation TUITextRenderer
 
-@synthesize attributedString;
 @synthesize frame;
 @synthesize view;
 @synthesize hitRange;
@@ -140,24 +139,24 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 - (CFIndex)_clampToValidRange:(CFIndex)index
 {
 	if(index < 0) return 0;
-	CFIndex max = [attributedString length] - 1;
+	CFIndex max = [self.textStorage length] - 1;
 	if(index > max) return max;
 	return index;
 }
 
 - (NSRange)_wordRangeAtIndex:(CFIndex)index
 {
-	return [attributedString doubleClickAtIndex:[self _clampToValidRange:index]];
+	return [self.textStorage doubleClickAtIndex:[self _clampToValidRange:index]];
 }
 
 - (NSRange)_lineRangeAtIndex:(CFIndex)index
 {
-	return [[attributedString string] lineRangeForRange:NSMakeRange(index, 0)];
+	return [[self.textStorage string] lineRangeForRange:NSMakeRange(index, 0)];
 }
 
 - (NSRange)_paragraphRangeAtIndex:(CFIndex)index
 {
-	return [[attributedString string] paragraphRangeForRange:NSMakeRange(index, 0)];
+	return [[self.textStorage string] paragraphRangeForRange:NSMakeRange(index, 0)];
 }
 
 - (CFRange)_selectedRange
@@ -201,7 +200,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 }
 
 - (TUITextStorage *)drawingAttributedString {
-    return attributedString;
+    return self.textStorage;
 }
 
 - (NSRange)selectedRange
@@ -219,7 +218,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 
 - (NSString *)selectedString
 {
-	return [[attributedString string] substringWithRange:[self selectedRange]];
+	return [[self.textStorage string] substringWithRange:[self selectedRange]];
 }
 
 - (void)draw
@@ -229,7 +228,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 
 - (void)drawInContext:(CGContextRef)context
 {
-	if(attributedString) {
+	if(self.textStorage) {
 		CGContextSaveGState(context);
 		
 		if(_flags.preDrawBlocksEnabled && !_flags.drawMaskDragSelection) {
@@ -345,7 +344,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 
 - (CGSize)size
 {
-	if(attributedString) {
+	if(self.textStorage) {
 		return AB_CTFrameGetSize([self ctFrame]);
 	}
 	return CGSizeZero;
@@ -353,7 +352,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 
 - (CGSize)sizeConstrainedToWidth:(CGFloat)width
 {
-	if(attributedString) {
+	if(self.textStorage) {
 		CGRect oldFrame = frame;
 		self.frame = CGRectMake(0.0f, 0.0f, width, 1000000.0f);
 
@@ -379,9 +378,9 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 	return CGSizeMake(size.width, MIN(maxHeight, size.height));
 }
 
-- (void)setAttributedString:(TUITextStorage *)a
+- (void)setTextStorage:(TUITextStorage *)textStorage
 {
-	attributedString = a;
+	_textStorage = textStorage;
 	
 	[self _resetFramesetter];
 }

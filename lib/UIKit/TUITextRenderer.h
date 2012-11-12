@@ -61,7 +61,7 @@ extern NSString *const TUITextRendererDidResignFirstResponder;
 	} _flags;
 }
 
-@property (nonatomic, strong) TUITextStorage *attributedString;
+@property (nonatomic, strong) TUITextStorage *textStorage;
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, unsafe_unretained) TUIView *view; // unsafe_unretained, remember to set to nil before view goes away
 
