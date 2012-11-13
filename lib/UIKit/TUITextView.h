@@ -14,49 +14,14 @@
  limitations under the License.
  */
 
-#import "TUIControl.h"
+#import "TUIScrollView.h"
 #import "TUIGeometry.h"
 #import "TUITextStorage.h"
 #import "TUITextEditor.h"
 
-@protocol TUITextViewDelegate;
+@class TUITextView;
 
-@interface TUITextView : TUIControl
-
-@property (nonatomic, unsafe_unretained) id <TUITextViewDelegate> delegate;
-
-@property (nonatomic, copy) NSString *text;
-@property (nonatomic, copy) NSString *placeholder;
-
-@property (nonatomic, strong, readonly) TUITextRenderer *renderer;
-@property (nonatomic, strong, readonly) TUITextRenderer *placeholderRenderer;
-
-@property (nonatomic, strong) NSFont *font;
-@property (nonatomic, strong) NSColor *textColor;
-@property (nonatomic, assign) TUITextAlignment textAlignment;
-
-@property (nonatomic, assign) BOOL clearsOnBeginEditing;
-
-// Dysfunctional.
-@property (nonatomic, assign) BOOL adjustsFontSizeToFitWidth;
-@property (nonatomic, assign) CGFloat minimumFontSize;
-
-@property (nonatomic, strong) NSColor *cursorColor;
-@property (nonatomic, assign) CGFloat cursorWidth;
-@property (nonatomic, assign) TUIEdgeInsets contentInset;
-
-@property (nonatomic, assign) NSRange selectedRange;
-@property (nonatomic, assign, getter = isEditable) BOOL editable;
-@property (nonatomic, assign, getter = isSpellCheckingEnabled) BOOL spellCheckingEnabled;
-@property (nonatomic, assign, getter = isAutocorrectionEnabled) BOOL autocorrectionEnabled;
-
-@property (nonatomic, copy) TUIViewDrawRect drawFrame;
-
-- (BOOL)doCommandBySelector:(SEL)selector;
-
-@end
-
-@protocol TUITextViewDelegate <NSObject>
+@protocol TUITextViewDelegate <TUIScrollViewDelegate>
 
 @optional
 
@@ -72,5 +37,35 @@
 - (BOOL)textViewShouldReturn:(TUITextView *)textView;
 - (BOOL)textViewShouldClear:(TUITextView *)textView;
 - (BOOL)textViewShouldTabToNext:(TUITextView *)textView;
+
+@end
+
+@interface TUITextView : TUIScrollView
+
+@property (nonatomic, unsafe_unretained) id <TUITextViewDelegate> delegate;
+
+@property (nonatomic, copy) NSString *text;
+@property (nonatomic, copy) NSString *placeholder;
+
+@property (nonatomic, strong, readonly) TUITextRenderer *renderer;
+@property (nonatomic, strong, readonly) TUITextRenderer *placeholderRenderer;
+
+@property (nonatomic, strong) NSFont *font;
+@property (nonatomic, strong) NSColor *textColor;
+@property (nonatomic, assign) TUITextAlignment textAlignment;
+
+@property (nonatomic, assign) BOOL clearsOnBeginEditing;
+
+@property (nonatomic, strong) NSColor *cursorColor;
+@property (nonatomic, assign) CGFloat cursorWidth;
+
+@property (nonatomic, assign) NSRange selectedRange;
+@property (nonatomic, assign, getter = isEditable) BOOL editable;
+@property (nonatomic, assign, getter = isSpellCheckingEnabled) BOOL spellCheckingEnabled;
+@property (nonatomic, assign, getter = isAutocorrectionEnabled) BOOL autocorrectionEnabled;
+
+@property (nonatomic, copy) TUIViewDrawRect drawFrame;
+
+- (BOOL)doCommandBySelector:(SEL)selector;
 
 @end

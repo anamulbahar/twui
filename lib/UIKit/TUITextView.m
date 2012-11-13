@@ -67,6 +67,8 @@ static CAAnimation* TUICursorThrobAnimation() {
 
 @implementation TUITextView
 
+@dynamic delegate;
+
 #pragma mark -
 #pragma mark Object Lifecycle
 
@@ -74,6 +76,8 @@ static CAAnimation* TUICursorThrobAnimation() {
 	if((self = [super initWithFrame:frame])) {
 		self.needsDisplayWhenWindowsKeyednessChanges = YES;
 		self.backgroundColor = [NSColor clearColor];
+		self.alwaysBounceVertical = YES;
+		self.clipsToBounds = YES;
 		
 		self.editor = [[TUITextViewEditor alloc] init];
 		self.placeholderRenderer = [[TUITextRenderer alloc] init];
@@ -117,6 +121,7 @@ static CAAnimation* TUICursorThrobAnimation() {
 // Only keep the cursor displayed if the window is key.
 - (void)windowDidBecomeKey {
 	[self addSubview:self.cursor];
+	self.editor.text = [@"" stringByPaddingToLength:5000 withString:@"Lorem Ipsum " startingAtIndex:0];
 	[super windowDidBecomeKey];
 }
 
@@ -316,16 +321,15 @@ static CAAnimation* TUICursorThrobAnimation() {
 		[self.cursor.layer addAnimation:TUICursorThrobAnimation() forKey:@"opacity"];
 	}
 	
-	// Get the cursor and text metrics.
-	CGRect cursorRect = [self _cursorRect];
-	CGRect textRect = TUIEdgeInsetsInsetRect(self.bounds, self.contentInset);
-	CGRect rendererFrame = textRect;
+	// Get the text metrics set up.
+	self.contentSize = [self.editor sizeConstrainedToWidth:self.frame.size.width];
+	CGRect rendererFrame = TUIEdgeInsetsInsetRect(self.contentRect, self.contentInset);
 	self.editor.frame = rendererFrame;
 	
 	// If the cursor is displayed, position it without animations.
 	if(showCursor) {
 		[TUIView setAnimationsEnabled:NO block:^{
-			self.cursor.frame = cursorRect;
+			self.cursor.frame = [self _cursorRect];
 		}];
 	}
 	
@@ -345,19 +349,6 @@ static CAAnimation* TUICursorThrobAnimation() {
 	// placeholder renderer or the actual text editor and draw it.
 	// Note that to allow editing, we set the editor's frame as well.
 	[(placeholderRequired ? self.placeholderRenderer : self.editor) draw];
-}
-
-- (CGSize)sizeThatFits:(CGSize)size {
-	CGFloat insetWidth = CGRectGetWidth(TUIEdgeInsetsInsetRect(self.bounds, self.contentInset));
-	CGSize textSize = [self.editor sizeConstrainedToWidth:insetWidth];
-	
-	// If the string ends with a return, CTFrameGetLines doesn't consider that a new line.
-	if([self.text hasSuffix:@"\n"]) {
-		CGRect firstCharacterRect = [self.editor firstRectForCharacterRange:CFRangeMake(0, 0)];
-		textSize.height += firstCharacterRect.size.height;
-	}
-	
-	return CGSizeMake(CGRectGetWidth(self.bounds), textSize.height + self.contentInset.top + self.contentInset.bottom);
 }
 
 #pragma mark -
@@ -391,7 +382,8 @@ static CAAnimation* TUICursorThrobAnimation() {
 		[self.text enumerateSubstringsInRange:wholeLineRange options:options
 													  usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
 			if(selectionRange.location >= substringRange.location &&
-															 selectionRange.location <= substringRange.location + substringRange.length) {
+			   selectionRange.location <= substringRange.location + substringRange.length) {
+				
 				activeWordSubstringRange = substringRange;
 				*stop = YES;
 			}
@@ -680,7 +672,7 @@ static CAAnimation* TUICursorThrobAnimation() {
 
 - (BOOL)doCommandBySelector:(SEL)selector {
 	if(_textViewFlags.delegateDoCommandBySelector) {
-		if([_delegate textView:self doCommandBySelector:selector])
+		if([(id <TUITextViewDelegate>)_delegate textView:self doCommandBySelector:selector])
 			return YES;
 	}
 	
