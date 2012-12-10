@@ -941,7 +941,6 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 
 - (void)reloadData
 {
-  
   // notify our delegate we're about to reload the table
   if(self.delegate != nil && [self.delegate respondsToSelector:@selector(tableViewWillReloadData:)]){
     [self.delegate tableViewWillReloadData:self];
@@ -1084,9 +1083,9 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 - (void)selectRowAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(TUITableViewScrollPosition)scrollPosition
 {
 	NSIndexPath *oldIndexPath = [self indexPathForSelectedRow];
-//	if([indexPath isEqual:oldIndexPath]) {
-//		// just scroll to visible
-//	} else {
+	if([indexPath isEqual:oldIndexPath]) {
+		// just scroll to visible
+	} else {
 		[self deselectRowAtIndexPath:[self indexPathForSelectedRow] animated:animated];
 		
 		TUITableViewCell *cell = [self cellForRowAtIndexPath:indexPath]; // may be nil
@@ -1099,7 +1098,7 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 		if([self.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)]){
 			[self.delegate tableView:self didSelectRowAtIndexPath:indexPath];
 		}
-//	}
+	}
 
   NSResponder *firstResponder = [self.nsWindow firstResponder];
   if(firstResponder == self || firstResponder == [self cellForRowAtIndexPath:oldIndexPath]) {

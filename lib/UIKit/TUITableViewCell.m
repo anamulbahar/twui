@@ -290,6 +290,9 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 
 // Retrieve the delegate's menu for an event if there is one.
 - (NSMenu *)menuForEvent:(NSEvent *)event {
+	// We want cell to become selected when right-clicked
+	[self.tableView selectRowAtIndexPath:self.indexPath animated:YES scrollPosition:TUITableViewScrollPositionNone];
+	
 	if([self.tableView.delegate respondsToSelector:@selector(tableView:menuForRowAtIndexPath:withEvent:)]) {
 		return [self.tableView.delegate tableView:self.tableView menuForRowAtIndexPath:self.indexPath withEvent:event];
 	} else {

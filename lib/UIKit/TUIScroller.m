@@ -92,6 +92,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[self setHideKnobTimer:nil];
 }
 
 - (void)setHideKnobTimer:(NSTimer *)hideKnobTimer {
